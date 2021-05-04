@@ -1,0 +1,37 @@
+#show-sidebar{
+  font-size:20px;
+}
+
+#sidebar{
+  width:100%;
+  position:absolute;
+  background:#172B4D;
+}
+
+.sidebar-brand a{
+  display:flex;
+  justify-content:center;
+}
+
+.side-logo{
+  max-width:180px;
+
+}
+
+@media(max-width:768px){
+  #cr-grid{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .sidebar-container{
+  position:relative;
+  grid-column:1/2;
+}
+
+  .main-container{
+    border:3px solid red;
+    grid-column:1/2;
+    box-sizing:border-box;
+  }
+}

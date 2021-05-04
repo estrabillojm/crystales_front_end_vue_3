@@ -8,8 +8,11 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "json-server": "^0.16.3",
+    "sweetalert2": "^10.16.7",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-select": "git+https://github.com/sagalbot/vue-select.git#feat/vue-3-compat",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

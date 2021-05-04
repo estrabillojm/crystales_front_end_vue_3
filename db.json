@@ -1,0 +1,206 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "username": "10692",
+      "role": "requestor",
+      "department": "MIS",
+      "permissions": ["Tagging of Request"],
+      "active_date": "May 01, 2021",
+      "inactive_date": "",
+      "password": "12345"
+    }
+  ],
+  "department": [
+    {
+      "id": 1,
+      "name": "MIS"
+    },
+    {
+      "id": 2,
+      "name": "HR"
+    },
+    {
+      "id": 3,
+      "name": "D1"
+    },
+    {
+      "id": 4,
+      "name": "D2"
+    },
+    {
+      "id": 5,
+      "name": "D3"
+    },
+    {
+      "id": 6,
+      "name": "D4"
+    }
+  ],
+  "supplier": [
+    {
+      "id": 1,
+      "name": "Supplier 1"
+    },
+    {
+      "id": 2,
+      "name": "Supplier 2"
+    },
+    {
+      "id": 3,
+      "name": "Supplier 3"
+    },
+    {
+      "id": 4,
+      "name": "Supplier 4"
+    },
+    {
+      "id": 5,
+      "name": "Supplier 5"
+    }
+  ],
+  "bank": [
+    {
+      "id": 1,
+      "name": "Bank 1"
+    },
+    {
+      "id": 2,
+      "name": "Bank 2"
+    },
+    {
+      "id": 3,
+      "name": "Bank 3"
+    },
+    {
+      "id": 4,
+      "name": "Bank 4"
+    },
+    {
+      "id": 5,
+      "name": "Bank 5"
+    }
+  ],
+  "permissions": [
+    {
+      "id": 1,
+      "name": "Tagging of Request"
+    },
+    {
+      "id": 2,
+      "name": "Identifying of Receipt"
+    },
+    {
+      "id": 3,
+      "name": "Received Receipt Report"
+    },
+    {
+      "id": 4,
+      "name": "Edited Tag Approval"
+    },
+    {
+      "id": 5,
+      "name": "Releasing of Cheque"
+    },
+    {
+      "id": 6,
+      "name": "Creation of Cheque"
+    },
+    {
+      "id": 7,
+      "name": "Clearing of Cheque"
+    },
+    {
+      "id": 8,
+      "name": "Tagged Document Reports"
+    },
+    {
+      "id": 9,
+      "name": "Cheque Reports"
+    },
+    {
+      "id": 10,
+      "name": "Matching of Voucher"
+    },
+    {
+      "id": 11,
+      "name": "Creation of Voucher"
+    },
+    {
+      "id": 12,
+      "name": "Checking of Voucher"
+    },
+    {
+      "id": 13,
+      "name": "Approving of Voucher"
+    },
+    {
+      "id": 14,
+      "name": "Tagging and Vouchering"
+    },
+    {
+      "id": 15,
+      "name": "Releasing"
+    },
+    {
+      "id": 16,
+      "name": "Approval"
+    },
+    {
+      "id": 17,
+      "name": "Activity Logs"
+    },
+    {
+      "id": 18,
+      "name": "Transaction Approval"
+    }
+  ],
+  "api": [
+    {
+      "id": 1,
+      "id_number": 101,
+      "department": "MIS",
+      "firstname": "John Michael",
+      "lastname": "Estrabillo",
+      "middlename": "borlongan",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
+    },
+    {
+      "id": 2,
+      "id_number": 102,
+      "department": "MIS",
+      "firstname": "JM",
+      "lastname": "Borlongan",
+      "middlename": "borlongan",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
+    },
+    {
+      "id": 3,
+      "id_number": 103,
+      "department": "MIS",
+      "firstname": "John",
+      "lastname": "EB",
+      "middlename": "borlongan",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
+    }
+  ]
+}
