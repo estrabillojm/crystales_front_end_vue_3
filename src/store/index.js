@@ -5,21 +5,23 @@ export default createStore({
     posts: [], 
     users: [],
     roles:[
-      {"id": 1, "name": "Requestor", "def_perm":["Tagged Document Reports", "Cheque Reports", "Received Receipt Report"]}, 
-      {"id": 2, "name": "AP Tagging", "def_perm":["Edited Tag Approval", "Matching of Voucher", "Received Receipt Report 2"]},
-      {"id": 3, "name": "GAS"},
-      {"id": 4, "name": "AP Associate", "def_perm":["Tagged Document Reports", "Cheque Reports", "Received Receipt Report", "Tagging of Request", "Approving of Voucher" ]},
-      {"id": 5, "name": "AP Specialist", "def_perm":[]},
-      {"id": 6, "name": "Treasury", "def_perm":[]},
-      {"id": 7, "name": "Supervisor", "def_perm":[]},
-      {"id": 8, "name": "Manager", "def_perm":[]}, 
-      {"id": 9, "name": "Approver", "def_perm":[]}
+      {"id": 1, "name": "Requestor", "def_perm":["Tagging of Request"]}, 
+      {"id": 2, "name": "AP Tagging", "def_perm":["Tagging of Request","Tagged Document Reports","Releasing of Cheque","Cheque Reports", "Tagging of Document"]},
+      {"id": 3, "name": "GAS", "def_perm":["Identifying of Receipt","Matching of Voucher"]},
+      {"id": 4, "name": "Filing Clerk", "def_perm":["Distributing of Document"]},
+      {"id": 5, "name": "AP Associate", "def_perm":["Creation of Voucher"]},
+      {"id": 6, "name": "AP Specialist", "def_perm":["Received Receipt Report","Checking of Voucher","Approving of Voucher"]},
+      {"id": 7, "name": "Treasury", "def_perm":["Creation of Cheque","Clearing of Cheque"]},
+      {"id": 8, "name": "Approver", "def_perm":["Edited Tag Approval", "Approving of Voucher", "Releasing", "Approval"]}
     ],
-    api: [],
-    permissions: []
+    apis: [],
+    permissions: [],
+    documentTypes: [],
+    prm:[],
+    contractor:[],
     
   },
-
+      
 
   // MUTATIONS
   mutations: {
@@ -31,12 +33,25 @@ export default createStore({
     },
     
 
-    LOAD_API(state, api){
-      state.api = api
+    LOAD_APIS(state, apis){
+      state.apis = apis
     },
     LOAD_PERMISSIONS(state, permissions){
       state.permissions = permissions
-    }
+    },
+
+    LOAD_DOCTYPES(state, loadDocType){
+      state.documentTypes = loadDocType
+    },
+
+    LOAD_PRMCATEGORY(state, loadPrmCategory){
+      state.prm = loadPrmCategory
+    },
+
+
+    LOAD_CONTRACTORCATEGORY(state, loadContractorCategory){
+      state.contractor = loadContractorCategory
+    },
     
   },
 
@@ -73,12 +88,13 @@ export default createStore({
 
 
     //API
-    loadApi({ commit }){
+    loadApis({ commit }){
       axios.get('/api')
       .then(response=>{
         console.log(response.data) 
-        let api = response.data
-        commit('LOAD_API', api)
+        let apis = response.data
+        console.log(apis , "tss")
+        commit('LOAD_APIS', apis)
       })
       .catch(error => {
         console.log(error)
@@ -102,6 +118,49 @@ export default createStore({
         console.log(error)
       })
     }, 
+
+
+
+
+    //LOAD DOCUMENT TYPE
+    loadDocType({ commit }){
+      axios.get('/document_types')
+      .then(response=>{
+        console.log(response.data) 
+        let docType = response.data
+        commit('LOAD_DOCTYPES', docType)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }, 
+
+    // LOAD PRM CATEGORY
+    loadPrmCategory({ commit }){
+      axios.get('/prm_category')
+      .then(response=>{
+        console.log(response.data) 
+        let prm = response.data
+        commit('LOAD_PRMCATEGORY', prm)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }, 
+
+
+
+    loadContractorsCategory({ commit }){
+      axios.get('/contractor_category')
+      .then(response=>{
+        console.log(response.data) 
+        let contractor = response.data
+        commit('LOAD_CONTRACTORCATEGORY', contractor)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }
   },
   modules: {
   }
