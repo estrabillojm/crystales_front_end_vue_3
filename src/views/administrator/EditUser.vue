@@ -5,18 +5,22 @@
     </div>
     <div class="main-container">
     <Navbar/>
+
     <div class="grid-container">
+       
         <div class="auser add-user">
+            
+        
             <form @submit.prevent="userSubmit">
                 <div class="form-group fg mt-3">
                     <label for="#">Employee ID</label>
-                    <input type="text" class="employeeId form-control" required v-model="userData.employee_id" @keyup="findUser(userData.employee_id)"> 
+                    <input type="text" class="employeeId form-control disable" required v-model="result.user_id" @keyup="findUser(userData.employee_id)" disabled> 
                     <p class="error pt-1" v-if="userData.employee_id.length > 1 && error">Employee ID not yet registered</p>
                 </div>
 
                 <div class="form-group fg">
                     <label for="#">Role</label>
-                    <select class="form-control" v-model="userData.role" required @change="onChange(userData.role)">\
+                    <select class="form-control" v-model="result.role" @change="roleSelect(result.role)" required>
                         <option value="">Select Role</option>
                         <option v-for="role in roles" :value="role.name" :key="role.id">
                         {{ role.name }}
@@ -24,102 +28,188 @@
                     </select>
                 </div>
 
-                <span class="grid-check">
+                <span  v-if="result.role" class="grid-check">
+                    
+                    <p><strong>{{ userData.role }} Privilege</strong></p>
+                     <br>
+                    
                     <div class="form-check" v-for="prm in permissions" :key="prm.id">
-                        <span v-for="cp in checkedPermissions" :key="cp">
-                            <input type="checkbox" :id="prm.name" checked v-if="cp == prm.name" name="permi" @change.once="onUnMark(prm.name)" class="permissions_cb">
-                        </span>
-                            
-                        <span v-for="ucp in uncheckedPermissions" :key="ucp">
-                            <input type="checkbox" v-if="ucp == prm.name" name="permi" :value="prm.name" :id="prm.name" @change.once="onMark(prm.name)" class="permissions_cb">
-                        </span>
-
-                        <span v-if="uncheckedPermissions.length != 0 || checkedPermissions.length != 0">
-                            &nbsp; <label :for="`${prm.name}`" class="permissions_cb">{{ prm.name }}</label>
-                        </span>
-
+                        <input type="checkbox"  class="doctype_cb" :value="prm.name" :id="`permi${prm.id}`" v-model="result.permissions" @change="changeStatus(prm.name)">
+                        <label :for="`permi${prm.id}`"  class="doctype_cb">&nbsp; {{ prm.name }}</label>
                     </div>     
                 </span>
 
-                <span v-if="userData.role && result.length != 0 && checkedPermissions.length != 0">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
+
+
+                
+                <span v-if="!taggingRequest && result.role != '' && perLength.length != 0">    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Update</button>
                 </span>
 
-                <span v-else>
-                    <button type="submit" class="btn btn-sm btn-primary mt-4 btn-disabled" disabled>Sign Up</button>
-
+                <span v-else-if="taggingRequest && result.document_type.length && !showPrm && !showCb && perLength.length != 0">    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Update 1</button>
                 </span>
 
+
+                <span v-else-if="taggingRequest && result.document_type.length && showPrm && result.prm_categories.length && !showCb">    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Update 2</button>
+                </span>
+
+
+                <span v-else-if="taggingRequest && result.document_type.length && showCb && result.contractor_categories.length && !showPrm">    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Update 3</button>
+                </span>
+
+                <span v-else-if="taggingRequest && result.document_type.length && showCb && result.contractor_categories.length && showPrm && result.prm_categories.length">    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Update 4</button>
+                </span>
+
+            
+                <span v-else>    
+                    <button type="submit" class="btn btn-sm btn-primary mt-4 btn-disabled" disabled>Update</button>
+                </span>
+
+                <span>
+                    <button @click="findUser($route.params.id)" class="btn btn-sm btn-success ml-1 mt-4">Restore Defaults</button>
+                </span>
                 <router-link :to="{name: 'Users'}">
-                    <button class="btn btn-sm btn-danger mt-4 ml-1">Cancel</button>
+                    <button class="btn btn-sm btn-default mt-4 ml-1" title="Back to User Masterlist"><span class="material-icons">east</span></button>
                 </router-link>
-
                 <div class="form-group">
-
                 </div>
-   
             </form>
+           
         </div>
-        <div class="auser user-info" v-for="res in result" :key="res.id">
-            <div class="col-md-12 mt-3 row">
-
-                <div class="col-md-12">
-                    <h3>{{ `${res.lastname}, ${res.firstname} ${res.middlename[0].toUpperCase()}.` }}</h3>
-                </div>
-
-                <div class="col-md-12 auser-address">
-                   <p>{{ `${res.brgy}, ` }}</p>
-                   <p>{{ `${res.municipality}, ` }}</p>
-                   <p>{{ `${res.province}, ` }}</p>
-                   <p>{{ `${res.region} ` }}</p>
-                   <hr>
-                </div>
-                
 
 
 
 
-                <div class="col-md-6">
-                    <label for="lastname">ID Number</label>
-                    <input type="text" class="form-control disable" :value="res.id_number">
+
+       
+        <div class="grid-header">
+
+            <div class="auser user-info">
+                <div class="col-md-12 mt-3 row">                  
+                    <div class="col-md-12">
+                        <h3>
+                            <span id="lastname">{{ result.lastname }}</span>, 
+                            <span id="firstname">{{ result.firstname }}</span>{{ " " }}
+                            <span>{{ result.middlename }}</span>.
+                        </h3>
+                    </div>
+
+                    <div class="col-md-12 auser-address">
+                    <p><strong>Employee ID : </strong> {{ result.user_id }}</p>
+                    <br>
+                    <p><strong>Department : </strong><span id="department">{{ result.department }}</span></p>
+                    <br>
+                    <p><strong>Username : </strong><span id="username">{{ result.username }}</span></p>
+                    <hr>
                     
-                </div>
+                    
+                    
+                        <span v-if="showDocType">
+                            <span>
+                                <p><strong>Document Type</strong><em> (For Tagging of Documents)</em></p>
+                                <div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-4" v-for="dt in documentTypes" :key="dt.id">
+                                            <input type="checkbox" name="" :id="`tor${dt.id}`" class="doctype_cb" :value="dt.name" v-model="result.document_type"  @change="docTypeStat(dt.name)">
+                                            <label :for="`tor${dt.id}`"  class="doctype_cb">&nbsp; {{ dt.name }}</label>
+                                
+                                        </div>
+                                    </div>  
+                                </div>
+                            </span>
+                        </span>
+                        
+                        <!-- SHOW PRM CATEGORY -->
+                        <span v-if="showPrm">
+                            <hr>
+                            <span>
+                                <span>
+                                    <p class=""><strong>PRM Category</strong></p>
+
+                                    <!-- <div class="mt-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                
+                                            </div>
+                                        </div>  
+                                    </div> -->
+                                    
+                                    <div>
+                                        <div class="mt-3">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" id="checkAll" @change="checkAll()" class="doctype_cb">
+                                                    <label  class="doctype_cb" for="checkAll"> &nbsp; <strong> Check All</strong></label>
+                                                </div>
+                                            </div>  
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6" v-for="pcat in prm" :key="pcat.id">
+                                                <input type="checkbox" name="" :id="`prm${pcat.id}`" class="doctype_cb" :value="pcat.name" v-model="result.prm_categories" @change="unCheckBox()" >
+                                                <label :for="`prm${pcat.id}`"  class="doctype_cb">&nbsp; {{ pcat.name }}</label>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </span>
+                            </span>
+                            
+                        </span>
+
+                        
 
 
-                <div class="col-md-6">
-                    <label for="firstname">Department</label>
-                    <input type="text" class="form-control disable" :value="res.department" disabled>
-                </div>
 
-                <div class="col-md-4 mt-4">
-                    <label for="firstname">Date of Birth</label>
-                    <input type="text" class="form-control disable" :value="res.department" disabled>
-                </div>
+                        <!-- SHOW CONTRACTORS BILL CATEGORY -->
+                        <span v-if="showCb">
+                            <hr>
+                            <span>
+                                <span>
+                                    <p class=""><strong>Contractor's Billing Category</strong></p>
 
-                <div class="col-md-4 mt-4">
-                    <label for="firstname">Civil Status</label>
-                    <input type="text" class="form-control disable" :value="res.civil_status.toUpperCase()" disabled>
+                                    <!-- <div class="mt-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                        
+                                                <label  class="doctype_cb" for="checkAllContractor"> &nbsp; <strong> Check All</strong></label>
+                                            </div>
+                                        </div>  
+                                    </div> -->
+                                    
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-md-6 mt-3">
+                                                <input type="checkbox" id="checkAllContractor" @change="checkAllContractor()" class="doctype_cb">
+                                                <label  class="doctype_cb" for="checkAllContractor"> &nbsp; <strong> Check All</strong></label>
+                                            </div>
+                                        </div>  
+                                        <div class="row">
+                                            <div class="col-md-6" v-for="ccat in contractor" :key="ccat.id">
+                                                <input type="checkbox" name="" :id="`cont${ccat.id}`" class="doctype_cb" :value="ccat.name" v-model="result.contractor_categories">
+                                                <label :for="`cont${ccat.id}`"  class="doctype_cb">&nbsp; {{ ccat.name }}</label>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </span>
+                            </span>
+                        </span>
+                        
+                    </div>
                 </div>
-                
-                <div class="col-md-4 mt-4">
-                    <label for="firstname">Date of Birth</label>
-                    <input type="text" class="form-control disable" :value="res.date_of_birth" disabled>
-                </div>
-
-                <div class="col-md-4 mt-4">
-                    <label for="firstname">Gender</label>
-                    <input type="text" class="form-control disable" :value="res.gender.toUpperCase()" disabled>
-                </div>
-                
             </div>
+            
+            
             
         </div>
     </div>
 
-    {{ checkedPermissions}}
-
     </div>
   </div>
+  
 </template>
 
 
@@ -137,9 +227,6 @@ import {mapState} from 'vuex'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-$(document).ready(function(){
-    
-})
 
 
 export default {
@@ -149,189 +236,223 @@ export default {
             userData: {
                 employee_id: '',
                 role: '',
-                permissions: []
+                permissions: [],
+                docType: [],
+                category: [],
+                username: '',
+                lastname: '',
+                firstname: '',
+                middlename: '',
+                department: '',
+
             },
-            result: [],
-            
+            result: [],           
             error: false,
             defaultPermissions: [],
             checkedPermissions: [],
             uncheckedPermissions: [],
-            username: ''
+            prmCategory: [],
+            contractorCategory: [],
+            showPrm: false,
+            showCb: false,
+            showDocType: false,
+            taggingRequest: false,
+            isCheckAll: false,
+            isCheckAllContractor: false,
+            isCheckAllDocument: false,
+            confidentialAccess: false,
+            conditionThree: false,     
+            perLength: []
         }
     },
     created(){
+        
         this.$store.dispatch('loadPermissions')
-        this.$store.dispatch('loadApi')
+        this.$store.dispatch('loadPrmCategory')
+        this.$store.dispatch('loadContractorsCategory')
+        this.$store.dispatch('loadDocType')
+
+        this.findUser(this.$route.params.id)
+        
+        
     },
     computed:{
         ...mapState([
             'api',
             'permissions',
-            'roles'
+            'roles',
+            'documentTypes',
+            'prm',
+            'contractor',
+            
         ])
         
     },
     methods:{
-        findUser(eid){
-            this.error = false;
-            axios.get(`/api?id_number=${eid}`).then((res)=>{
-               this.result = res.data
-               if(this.result.length){
-                   
-                   this.error = false
-               }else{   
-                 
-                   this.error =true;
-               }
+        roleSelect(val){
+            this.result.permissions = []
+            this.result.document_type = []
+            this.result.prm_categories = []
+            this.result.contractor_categories = []
+            this.showPrm = false
+            this.showCb = false
+            this.showDocType = false
+            this.taggingRequest = false
+            this.conditionThree = false
+            for(let i=0; i<this.roles.length; i++){
+                if(this.roles[i].name == val){
+                    for(let j=0; j<this.roles[i].def_perm.length; j++){
+                        var arr = this.roles[i].def_perm.indexOf('Tagging of Request')
+                        if(arr < 0){
+                            this.showDocType = false
+                            this.taggingRequest = false
+                        }else{
+                            this.showDocType = true
+                            this.taggingRequest = true
+                        }
+                        this.result.permissions.push(this.roles[i].def_perm[j])
+                    }
+                }
+            }
+        },
+        checkAll(){ 
+            this.isCheckAll = !this.isCheckAll; 
+            this.result.prm_categories = []; 
+            if(this.isCheckAll){ 
+                // Check all 
+                for (var key in this.prm) {   
+                    if(this.prm[key].name != "confidential request"){
+                        this.result.prm_categories.push(this.prm[key].name); 
+                    }
+                                  
+                } 
+            }         
+        },
+        unCheckBox(){    
+            $('#checkAll').prop('checked', false)
+            this.isCheckAll = false
+
+            if(this.result.prm_categories.length == this.prm.length){
+                $('#checkAll').prop('checked', true)
+                this.isCheckAll = true
+            }
+        },
+        checkAllContractor(){
+            this.result.contractor_categories = [] 
+            this.isCheckAllContractor = !this.isCheckAllContractor
+            
+            if(this.isCheckAllContractor){ 
+                // Check all 
+                for (var key in this.contractor) {   
+                    this.result.contractor_categories.push(this.contractor[key].name);          
+                } 
+            } 
+        },
+        findUser(uid){
+            this.isCheckAll = false
+            this.isCheckAllContractor = false 
+            this.showPrm = false
+            this.showCb = false
+            axios.get(`/users/${uid}`).then(res=>{
+                this.result = res.data
+                this.result.middlename = this.result.middlename[0]
+                this.perLength = this.result.permissions
+                for(let i=0; i<this.result.permissions.length; i++){
+                    if(this.result.permissions[i] == 'Tagging of Request'){
+                        this.showDocType = true;
+                        this.taggingRequest = true;
+                    }
+                }
+                console.log(this.result.prm_categories)
+        
+
+
+                for(let i=0; i<this.result.document_type.length; i++){
+                    if(this.result.document_type[i] == 'PRM'){
+                        this.showPrm = true;
+                    }
+                }
+
+                for(let i=0; i<this.result.document_type.length; i++){
+                    if(this.result.document_type[i] == "Contractor's Billing"){
+                        this.showCb = true;
+                    }
+                }
+
+                // for(let i=0; i<this.result.contractor_categories.length; i++){
+                //     if(this.result.contractor_categories[i] == "Contractor's Billing"){
+                //         this.showPrm = true;
+                //     }
+                // }
+                console.log('response', this.result)
             })
         },
-        onChange(da){
-            this.uncheckedPermissions = [];
-            this.checkedPermissions = [];
+        changeStatus(val){
+            
+            this.perLength = [];
 
-            if(da != ''){
+            if(this.result.permissions.length){
+
+                // for(let i=0; i<this.result.permissions.length; i++){
+                //     if(this.result.permissions[i] == 'Tagging of Request'){
+                //         this.showDocType = !this.showDocType
+                //     }
+                // }
+                this.perLength = this.result.permissions
+                if(val == 'Tagging of Request'){
+                    this.showDocType = !this.showDocType
+                    this.isPermission = false
+                    this.result.document_type = []
+                    this.result.prm_categories = []
+                    this.result.contractor_categories = []
+                    this.showPrm = false
+                    this.showCb = false
+                    this.taggingRequest = true
+                }
+            }else{
+                this.showDocType = false
+                this.showPrm = false
+                this.showCb = false
+                this.perLength = []
+                this.taggingRequest = false
                 
-                for(let i=0; i<this.permissions.length-1; i++){
-                    //console.log(this.permissions[i].name) // ALL PERMISSIONS
-                    // console.log(da) // THIS IS THE ROLE
-                    // console.log(this.roles[i].name)
-                    if(this.roles[i].name === da){
-                        let userPer = this.roles[i].def_perm
-                        userPer.forEach((data)=>{
-                            this.checkedPermissions.push(data);
-                            
-                            for(let j=0; j<this.checkedPermissions.length; j++){
-                                this.permissions.forEach(opp=>{
-                                    if(userPer[j] !== opp.name){
-                                    
-                                        if(!this.uncheckedPermissions.includes(opp.name)){
-                                            this.uncheckedPermissions.push(opp.name);
-                                        }
-                                    }
-                                })
-
-                            }
-                            
-                        })
-                        break;
-                    }
-                }
-                for(let i=0; i<this.checkedPermissions.length; i++){
-                    var arr = this.uncheckedPermissions
-                    var index = arr.indexOf(this.checkedPermissions[i])
-                    if(index > -1){
-                        arr.splice(index, 1);
-                    }
-                }
-                console.log(this.uncheckedPermissions.length);
-
+                    
 
             }
+           
+
         },
 
-
-        onMark(val){
-
-            this.checkedPermissions.push(val)
-
-            for(let i=0; i<this.checkedPermissions.length; i++){
-                var arr = this.uncheckedPermissions
-                var index = arr.indexOf(this.checkedPermissions[i])
-
-                if(index > -1){
-                    arr.splice(index, 1);
+        docTypeStat(val){
+            if(this.result.permissions.length){
+                if(val == 'PRM'){
+                    this.result.prm_categories = []
+                    this.showPrm = !this.showPrm
+                    this.isCheckAll = false;
+                }else if(val == "Contractor's Billing"){
+                    this.result.contractor_categories = []
+                    this.showCb = !this.showCb
+                    this.isCheckAllContractor = false;
                 }
+            }else{
+                this.showPrm = false
+                this.showCb = false
             }
-
-        },
-
-        onUnMark(val){
-            this.uncheckedPermissions.push(val)
-
-            for(let i=0; i<this.uncheckedPermissions.length; i++){
-                var arr = this.checkedPermissions
-                var index = arr.indexOf(this.uncheckedPermissions[i])
-
-                if(index > -1){
-                    arr.splice(index, 1);
-                }
-            }            
-        },
-
-        // onTick(val){
-
-        //     for(let i=0; i<this.checkedPermissions.length; i++){
-        //         var arr = this.checkedPermissions
-        //         var index = arr.indexOf(this.checkedPermissions[i])
-
-        //         if(index > -1){
-        //             arr.pop(index, 1);
-        //         }
-        //     }
-
-            
-        // },
-        userSubmit(){
-
-            Swal.fire({
-                title: 'Do you want to save this data?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Save`,
-                denyButtonText: `Don't save`,
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('Saved!', '', 'success')
-                    axios.post('/users', 
-                    {
-                        "user_id": this.userData.employee_id,
-                        "username": this.userData.employee_id,
-                        "role": this.userData.role,
-                        "permissions": this.checkedPermissions,
-                        "password": this.userData.employee_id
-                    }
-                    ).then(()=>{
-                        console.log("Data Saved")
-                        setTimeout(()=>{
-                            this.$router.push({name: 'Users'})
-                        }, 2000)
-                    })
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
-                }
-            })
-
-
-
-
-
-            
-
-
-
-
-        },
-
-        notAllowed(){
-            alert("ok");
         }
-            
-            
 
+        
     }
-   
-      
-      
-    
+
 }
 </script>
 
 
 
 <style scoped>
-
-.permissions_cb{
+.disable{
+    cursor:not-allowed;
+}
+.permissions_cb, .doctype_cb{
     cursor:pointer;
 }
 
@@ -345,10 +466,14 @@ export default {
 
 
 
-.auser-address p{
+p{
     display:inline;
     text-transform:uppercase;
     color:rgb(97, 97, 97);
+}
+
+span.username{
+    text-transform:lowercase;
 }
 
 .grid-check{
@@ -381,6 +506,7 @@ export default {
 
 .user-info{
     grid-column:2/4;
+    overflow:auto;
 }
 
 .auser:nth-child(1){
@@ -394,5 +520,6 @@ export default {
     box-sizing:border-box;
 
 }
+
     
 </style>

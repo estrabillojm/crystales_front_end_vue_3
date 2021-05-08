@@ -84,8 +84,7 @@ export default createStore({
       .catch(error => {
         console.log(error)
       })
-    }, 
-
+    },
 
     //API
     loadApis({ commit }){
@@ -149,7 +148,7 @@ export default createStore({
     }, 
 
 
-
+    //LOAD CONTRACTOR'S CATEGORY
     loadContractorsCategory({ commit }){
       axios.get('/contractor_category')
       .then(response=>{

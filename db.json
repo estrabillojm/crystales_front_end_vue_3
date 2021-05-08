@@ -8,21 +8,121 @@
       "firstname": "John Michael",
       "role": "Requestor",
       "document_type": [
-        "PAD",
-        "Contractor's Billing",
-        "PCF",
-        "Utilities",
-        "PRM",
-        "Receipt",
-        "Payroll"
+        "PRM"
       ],
       "permissions": [
-        "Tagging of Request",
-        "Received Receipt Report"
+        "Tagging of Request"
+      ],
+      "prm_categories": [
+        "rentals",
+        "loans",
+        "comission",
+        "salaries of physician and dentist",
+        "mancom fund",
+        "garbage disposal",
+        "down payment",
+        "farm expenses"
+      ],
+      "contractor_categories": [],
+      "password": "jestrabillo-101",
+      "department": "MIS",
+      "id": 4
+    },
+    {
+      "user_id": "101",
+      "username": "jestrabillo-101",
+      "lastname": "Estrabillo",
+      "middlename": "borlongan",
+      "firstname": "John Michael",
+      "role": "Requestor",
+      "document_type": [
+        "PRM",
+        "Contractor's Billing"
+      ],
+      "permissions": [
+        "Tagging of Request"
+      ],
+      "prm_categories": [
+        "rentals",
+        "confidential request"
+      ],
+      "contractor_categories": [
+        "down payment",
+        "retention",
+        "100% payment"
       ],
       "password": "jestrabillo-101",
       "department": "MIS",
-      "id": 1
+      "id": 5
+    },
+    {
+      "user_id": "101",
+      "username": "jestrabillo-101",
+      "lastname": "Estrabillo",
+      "middlename": "borlongan",
+      "firstname": "John Michael",
+      "role": "GAS",
+      "document_type": [],
+      "permissions": [
+        "Identifying of Receipt",
+        "Matching of Voucher"
+      ],
+      "prm_categories": [],
+      "contractor_categories": [],
+      "password": "jestrabillo-101",
+      "department": "MIS",
+      "id": 6
+    },
+    {
+      "user_id": "102",
+      "username": "jborlongan-102",
+      "lastname": "Borlongan",
+      "middlename": "borlongan",
+      "firstname": "JM",
+      "role": "Requestor",
+      "document_type": [
+        "PRM",
+        "Contractor's Billing",
+        "PAD",
+        "PCF",
+        "Receipt",
+        "Utilities"
+      ],
+      "permissions": [
+        "Tagging of Request",
+        "Tagging and Vouchering",
+        "Checking of Voucher",
+        "Matching of Voucher"
+      ],
+      "prm_categories": [
+        "rentals",
+        "loans",
+        "coop loans and dues",
+        "cash flow for new store",
+        "meat entry fee",
+        "comission",
+        "leasing",
+        "funds",
+        "payment for supplier",
+        "government benefits",
+        "billing",
+        "salaries of physician and dentist",
+        "maternity leave",
+        "mancom fund",
+        "garbage disposal",
+        "down payment",
+        "farm expenses"
+      ],
+      "contractor_categories": [
+        "down payment",
+        "progress billing",
+        "100% payment",
+        "retention",
+        "additional works"
+      ],
+      "password": "jborlongan-102",
+      "department": "MIS",
+      "id": 7
     }
   ],
   "document_types": [
@@ -207,32 +307,101 @@
       "name": "Tagging of Document"
     }
   ],
-  "prm_category":[
-    { "id":1 , "name":"rentals"},
-    { "id":2 , "name":"loans"},
-    { "id":3 , "name":"coop loans and dues"},
-    { "id":4 , "name":"cash flow for new store"},
-    { "id":5 , "name":"meat entry fee"},
-    { "id":6 , "name":"comission"},
-    { "id":7 , "name":"leasing"},
-    { "id":8 , "name":"funds"},
-    { "id":9 , "name":"payment for supplier"},
-    { "id":10 , "name":"government benefits"},
-    { "id":12 , "name":"billing"},
-    { "id":13 , "name":"salaries of physician and dentist"},
-    { "id":14 , "name":"maternity leave"},
-    { "id":15 , "name":"mancom fund"},
-    { "id":16 , "name":"garbage disposal"},
-    { "id":17 , "name":"down payment"},
-    { "id":18 , "name":"farm expenses"},
-    { "id":19 , "name":"confidential request"}
+  "prm_category": [
+    {
+      "id": 1,
+      "name": "rentals"
+    },
+    {
+      "id": 2,
+      "name": "loans"
+    },
+    {
+      "id": 3,
+      "name": "coop loans and dues"
+    },
+    {
+      "id": 4,
+      "name": "cash flow for new store"
+    },
+    {
+      "id": 5,
+      "name": "meat entry fee"
+    },
+    {
+      "id": 6,
+      "name": "comission"
+    },
+    {
+      "id": 7,
+      "name": "leasing"
+    },
+    {
+      "id": 8,
+      "name": "funds"
+    },
+    {
+      "id": 9,
+      "name": "payment for supplier"
+    },
+    {
+      "id": 10,
+      "name": "government benefits"
+    },
+    {
+      "id": 12,
+      "name": "billing"
+    },
+    {
+      "id": 13,
+      "name": "salaries of physician and dentist"
+    },
+    {
+      "id": 14,
+      "name": "maternity leave"
+    },
+    {
+      "id": 15,
+      "name": "mancom fund"
+    },
+    {
+      "id": 16,
+      "name": "garbage disposal"
+    },
+    {
+      "id": 17,
+      "name": "down payment"
+    },
+    {
+      "id": 18,
+      "name": "farm expenses"
+    },
+    {
+      "id": 19,
+      "name": "confidential request"
+    }
   ],
-  "contractor_category":[
-    {"id":1 , "name": "down payment"},
-    {"id":2 , "name": "progress billing"},
-    {"id":3 , "name": "100% payment"},
-    {"id":4 , "name": "retention"},
-    {"id":5 , "name":"additional works"}
+  "contractor_category": [
+    {
+      "id": 1,
+      "name": "down payment"
+    },
+    {
+      "id": 2,
+      "name": "progress billing"
+    },
+    {
+      "id": 3,
+      "name": "100% payment"
+    },
+    {
+      "id": 4,
+      "name": "retention"
+    },
+    {
+      "id": 5,
+      "name": "additional works"
+    }
   ],
   "api": [
     {

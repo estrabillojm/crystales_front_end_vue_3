@@ -19,7 +19,7 @@
 
                 <div class="form-group fg">
                     <label for="#">Role</label>
-                    <select class="form-control" v-model="userData.role" required @change="onChange(userData.role)">\
+                    <select class="form-control" v-model="userData.role" required @change="onChange(userData.role)">
                         <option value="">Select Role</option>
                         <option v-for="role in roles" :value="role.name" :key="role.id">
                         {{ role.name }}
@@ -115,10 +115,11 @@
                                     </div>  
                                 </div>
                             </span>
-                            <hr>
                         </span>
+                        
                         <!-- SHOW PRM CATEGORY -->
                         <span v-if="showPrm">
+                            <hr>
                             <span v-for="cp in checkedPermissions" :key="cp.id">
                                 <span v-if="cp =='Tagging of Request'">
                                     <p class=""><strong>PRM Category</strong></p>
@@ -132,7 +133,7 @@
                                         </div>  
                                     </div>
                                     
-                                    <div class="">
+                                    <div>
                                         <div class="row">
                                             <div class="col-md-6" v-for="sPrm in prm" :key="sPrm.id">
                                                 <input type="checkbox" class="doctype_cb" :id="`prm${sPrm.id}`" :class="{selectedPrm: sPrm.name!='confidential request'}" :value="sPrm.name" @change="confidentialRequest(sPrm.name)" v-model="prmCategory">
@@ -142,7 +143,7 @@
                                     </div>
                                 </span>
                             </span>
-                            <hr>
+                            
                         </span>
 
                         
@@ -151,6 +152,7 @@
 
                         <!-- SHOW CONTRACTORS BILL CATEGORY -->
                         <span v-if="showCb">
+                            <hr>
                             <span v-for="cp in checkedPermissions" :key="cp.id">
                                 <span v-if="cp =='Tagging of Request'">
                                     <p class=""><strong>Contractor's Billing Category</strong></p>
@@ -164,7 +166,7 @@
                                         </div>  
                                     </div>
                                     
-                                    <div class="mt-3">
+                                    <div>
                                         <div class="row">
                                             <div class="col-md-6" v-for="sCb in contractor" :key="sCb.id">
                                                 <input type="checkbox" class="doctype_cb" :id="`cb${sCb.id}`" :value="sCb.name" @change="unCheckAll()" v-model="contractorCategory">
@@ -306,6 +308,7 @@ export default {
             if(val == 'PRM'){
                 this.showPrm = !this.showPrm
                 this.prmCategory = []
+                this.isCheckAll = false;
 
                     
 
@@ -315,6 +318,7 @@ export default {
             }else if(val == "Contractor's Billing"){
                 this.showCb = !this.showCb
                 this.contractorCategory = []
+                this.isCheckAllContractor = false;
                 
             }
         },
@@ -328,6 +332,7 @@ export default {
             }
         },
         async findUser(eid){
+            
             this.error = false;
             axios.get(`/api?id_number=${eid}`).then((res)=>{
                this.result = res.data
@@ -455,19 +460,6 @@ export default {
             }            
         },
 
-        // onTick(val){
-
-        //     for(let i=0; i<this.checkedPermissions.length; i++){
-        //         var arr = this.checkedPermissions
-        //         var index = arr.indexOf(this.checkedPermissions[i])
-
-        //         if(index > -1){
-        //             arr.pop(index, 1);
-        //         }
-        //     }
-
-            
-        // },
         userSubmit(){
 
             Swal.fire({
@@ -489,6 +481,8 @@ export default {
                         "role": this.userData.role,
                         "document_type": this.userData.docType,
                         "permissions": this.checkedPermissions,
+                        "prm_categories": this.prmCategory,
+                        "contractor_categories": this.contractorCategory,
                         "password": this.userData.username,
                         "department": this.userData.department,
                     }

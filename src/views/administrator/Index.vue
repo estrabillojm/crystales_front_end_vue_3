@@ -91,7 +91,7 @@
                 
 
 
-                <router-link class="ml-1" :to="{name: 'EditUser', params:{ id: user.username}}">
+                <router-link class="ml-1" :to="{name: 'EditUser', params:{ id: user.id}}">
                   <button class="btn btn-info btn-sm btn-show-parent">
                     <span class="material-icons btn-show">edit</span>
                     Edit</button>
