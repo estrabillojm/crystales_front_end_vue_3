@@ -5,26 +5,33 @@ export default createStore({
     posts: [], 
     users: [],
     roles:[
-      {"id": 1, "name": "Requestor", "def_perm":["Tagging of Request"]}, 
-      {"id": 2, "name": "AP Tagging", "def_perm":["Tagging of Request","Tagged Document Reports","Releasing of Cheque","Cheque Reports", "Tagging of Document"]},
-      {"id": 3, "name": "GAS", "def_perm":["Identifying of Receipt","Matching of Voucher"]},
-      {"id": 4, "name": "Filing Clerk", "def_perm":["Distributing of Document"]},
-      {"id": 5, "name": "AP Associate", "def_perm":["Creation of Voucher"]},
-      {"id": 6, "name": "AP Specialist", "def_perm":["Received Receipt Report","Checking of Voucher","Approving of Voucher"]},
-      {"id": 7, "name": "Treasury", "def_perm":["Creation of Cheque","Clearing of Cheque"]},
-      {"id": 8, "name": "Approver", "def_perm":["Edited Tag Approval", "Approving of Voucher", "Releasing", "Approval"]}
+      {"id": 1, "name": "Requestor", "permissions":["Tagging of Request"]}, 
+      {"id": 2, "name": "AP Tagging", "permissions":["Tagging of Request","Tagged Document Reports","Releasing of Cheque","Cheque Reports", "Tagging of Document"]},
+      {"id": 3, "name": "GAS", "permissions":["Identifying of Receipt","Matching of Voucher"]},
+      {"id": 4, "name": "Filing Clerk", "permissions":["Distributing of Document"]},
+      {"id": 5, "name": "AP Associate", "permissions":["Creation of Voucher"]},
+      {"id": 6, "name": "AP Specialist", "permissions":["Received Receipt Report","Checking of Voucher","Approving of Voucher"]},
+      {"id": 7, "name": "Treasury", "permissions":["Creation of Cheque","Clearing of Cheque"]},
+      {"id": 8, "name": "Approver", "permissions":["Edited Tag Approval", "Approving of Voucher", "Releasing", "Approval"]},
+      {"id": 9, "name": "Administrator", "permissions": []}
     ],
     apis: [],
     permissions: [],
-    documentTypes: [],
+    documents: [],
     prm:[],
     contractor:[],
+    category: [],
     
   },
       
 
   // MUTATIONS
   mutations: {
+   
+    LOAD_CATEGORY(state, category){
+      state.category = category
+    },
+
     LOAD_POSTS(state, posts){
       state.posts = posts
     },
@@ -40,8 +47,8 @@ export default createStore({
       state.permissions = permissions
     },
 
-    LOAD_DOCTYPES(state, loadDocType){
-      state.documentTypes = loadDocType
+    LOAD_DOCUMENTS(state, loadDocuments){
+      state.documents = loadDocuments
     },
 
     LOAD_PRMCATEGORY(state, loadPrmCategory){
@@ -59,25 +66,28 @@ export default createStore({
   // ACTIONS
   actions: {
 
-    
-    loadPosts({ commit }){
-      axios.get('https://jsonplaceholder.typicode.com/users')
+   
+
+
+    loadCategory({ commit }){
+      axios.get('/categories?is_active=active')
       .then(response=>{
-        console.log(response.data) 
-        let posts = response.data
-        commit('LOAD_POSTS', posts)
+        let category = response.data
+        commit('LOAD_CATEGORY', category)
       })
       .catch(error => {
         console.log(error)
       })
     },
 
+  
+
 
     //USERS
     loadUsers({ commit }){
-      axios.get('/users')
+      axios.get('/users?is_active=active')
       .then(response=>{
-        console.log(response.data) 
+        
         let users = response.data
         commit('LOAD_USERS', users)
       })
@@ -90,7 +100,6 @@ export default createStore({
     loadApis({ commit }){
       axios.get('/api')
       .then(response=>{
-        console.log(response.data) 
         let apis = response.data
         console.log(apis , "tss")
         commit('LOAD_APIS', apis)
@@ -107,9 +116,9 @@ export default createStore({
 
     //LOAD PERMISSIONS
     loadPermissions({ commit }){
-      axios.get('/permissions')
+      axios.get('http://localhost:3000/permissions')
       .then(response=>{
-        console.log(response.data) 
+        
         let permissions = response.data
         commit('LOAD_PERMISSIONS', permissions)
       })
@@ -122,44 +131,17 @@ export default createStore({
 
 
     //LOAD DOCUMENT TYPE
-    loadDocType({ commit }){
-      axios.get('/document_types')
+    loadDocuments({ commit }){
+      axios.get('/documents?is_active=active')
       .then(response=>{
-        console.log(response.data) 
-        let docType = response.data
-        commit('LOAD_DOCTYPES', docType)
+        
+        let documents = response.data
+        commit('LOAD_DOCUMENTS', documents)
       })
       .catch(error => {
         console.log(error)
       })
     }, 
-
-    // LOAD PRM CATEGORY
-    loadPrmCategory({ commit }){
-      axios.get('/prm_category')
-      .then(response=>{
-        console.log(response.data) 
-        let prm = response.data
-        commit('LOAD_PRMCATEGORY', prm)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    }, 
-
-
-    //LOAD CONTRACTOR'S CATEGORY
-    loadContractorsCategory({ commit }){
-      axios.get('/contractor_category')
-      .then(response=>{
-        console.log(response.data) 
-        let contractor = response.data
-        commit('LOAD_CONTRACTORCATEGORY', contractor)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    }
   },
   modules: {
   }

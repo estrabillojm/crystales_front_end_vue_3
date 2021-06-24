@@ -50,38 +50,52 @@
                 <li>
                   <router-link :to="{ name: 'Users'}">User Accounts</router-link>
                 </li>
-                <li>
-                    <router-link :to="{ name: 'Supplier'}">Suppliers</router-link>
 
+                <li>
+                  <router-link :to="{ name: 'Documents'}">Documents</router-link>
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'AddCategory'}">Categories</router-link>
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'Companies'}">Companies</router-link>
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'Referrences'}">Referrences</router-link>
+
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'Reasons'}">Reasons</router-link>
+                  
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'Banks'}">Banks</router-link>
                 </li>
 
                 <li>
                     <router-link :to="{ name: 'SupplierType'}">Supplier Type</router-link>
-
-                </li>
-                <li>
-                  <a href="#">Banks</a>
-                </li>
-                <li>
-                  <a href="#">Reasons</a>
-                </li>
-
-                <li>
-                  <a href="#">Location</a>
-                </li>
-
-                <li>
-                  <a href="#">Document Type</a>
                 </li>
 
 
                 <li>
-                  <a href="#">Reference Type</a>
+                    <router-link :to="{ name: 'Suppliers'}">Suppliers</router-link>
                 </li>
 
-                <li>
-                  <a href="#">Category</a>
-                </li>
+                
+                
+                
+
+                
+
+
+                
+
+                
               </ul>
             </div>
           </li>
@@ -252,15 +266,18 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
   methods:{
     logOut(){
-      this.$router.push('/')
+      axios.post('/logout').then(res=>{
+        console.log("Successfully Sign Out")
+      })
     }
   },
   created(){
-    
+
+  
   },
   mounted(){
 
@@ -301,6 +318,8 @@ export default {
 <style scoped>
   @import '../../assets/css/side-style.css';
   @import '../../assets/css/side-custom.css';
+
+
 
   .side-logo{
     animation: opac 3s infinite both linear;

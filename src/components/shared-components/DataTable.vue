@@ -19,12 +19,15 @@
                     <span class="material-icons search-ic">
                         search
                     </span>
-                    <input type="text" placeholder="Search">
+                    <slot name="tb-search">
+                    
+                    </slot>
                 </div>
+                
 
                 <div class="flex-table">
                     <table>
-                        <thead class="thead">
+                        <thead class="thead table-header">
                             <tr>
                                 <slot name="tb-header">
                                     
@@ -37,23 +40,32 @@
                             </slot>
                         </tbody>
                     </table>
+                    <hr>
                 </div>
             </div>
-      </div>
+        </div>
+        <!-- <button>Previous 2322</button>
+        <button>Next 2322</button> -->
 
   </div>
 </template>
 
 <script>
 import Loading from './Loading'
+import axios from 'axios'
 export default {
     components: { Loading },
+    
 }
 </script>
 
 <style>
+
+    .thead tr th{
+        padding-left:15px !important;
+    }
     .cr-nav{
-        background-color:#596FEC;
+        background-color:;
         height:80px;
         display:flex;
         justify-content:flex-end;
@@ -66,13 +78,11 @@ export default {
         font-weight:600;
     }
 
-    .cr-datatable{   
-        height:calc(100vh - 100px);
-    }
+    
  
     tbody tr td{
         color:white;
         padding:10px 0;
-        padding-left:5px;
+        padding-left:15px;
     }
 </style>

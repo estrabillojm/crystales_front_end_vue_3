@@ -9,20 +9,21 @@
         
 
         <div class="grid-header m5">
+
             <div class="loader-container" v-if="!isDone">
                 <Loading class="loader"/>
             </div>
             <div class="row">
                 <div class="col-md-4 pl-4 mt-2">
-                    <form @submit.prevent="supplierTypeSave()" autocomplete="off">
+                    <form @submit.prevent="companySave()" autocomplete="off">
                         <div class="form-group">
-                            <label for="category">Type</label>
-                            <input type="text" class="form-control" id="supplierType-type" required v-model="userInput.type">
+                            <label for="category">Company Code</label>
+                            <input type="number" class="form-control" id="company-code" v-model="userInput.code">
                         </div>
 
                         <div class="form-group">
-                            <label for="category">Transaction Days</label>
-                            <input type="number" class="form-control" id="supplierType-transaction_days" required  v-model="userInput.transaction_days">
+                            <label for="category">Company Description</label>
+                            <input type="text" class="form-control" id="company-description"  v-model="userInput.description">
                         </div>
 
                         
@@ -30,7 +31,7 @@
                         <div class="form-group row">
                             <div class="col-md-3 pr-0" v-if="!editMode">
                 
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                                <span v-if="userInput.code < 1 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Save</button>
                                 </span>
                                 <span v-else>
@@ -41,7 +42,7 @@
 
                             <div class="col-md-3 pr-0" v-else>
                 
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                                <span v-if="userInput.code < 1 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Update</button>
                                 </span>
                                 <span v-else>
@@ -67,7 +68,9 @@
 
         
         <template v-slot:tb-btn-tab>
+           
         </template>
+
 
         <template v-slot:tb-search>
             <input type="text" @keyup.enter="searchData()" v-model="query" placeholder="Search">
@@ -75,8 +78,8 @@
         
         <template v-slot:tb-header>
           <th>ID #</th>
-          <th>Type</th>
-          <th>Transaction Days</th>
+          <th>Code</th>
+          <th>Company</th>
           <!-- <th>Date Created</th> -->
           
           <th class="text-center">Action</th>
@@ -84,14 +87,14 @@
         
         <template v-slot:tb-data>
 
-          <tr class="hovered" v-for="supplierType in supplierTypes" :key="supplierType.id">
-            <td>{{ supplierType.id }}</td>
-            <td>{{ supplierType.type }}</td>
-            <td>{{ supplierType.transaction_days }}</td>
-            <!-- <td>{{ supplierType.created_at }}</td> -->
+          <tr class="hovered" v-for="company in companies" :key="company.id">
+            <td>{{ company.id }}</td>
+            <td>{{ company.company_code }}</td>
+            <td>{{ company.company_description }}</td>
+            <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" @click="updateMode(supplierType.id, supplierType.type, supplierType.transaction_days)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="supplierTypeArchive(supplierType.id)">Archive</button>
+                <button class="btn btn-sm btn-info" @click="updateMode(company.id, company.company_code, company.company_description)">Edit</button>
+                <button class="btn btn-sm btn-warning ml-1" @click="companyArchive(company.id)">Archive</button>
             </td> 
         
     
@@ -129,32 +132,34 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
+           query: '',
            editId: null,
            editMode: false,
-           supplierTypes: [],
-           supplierTypeid: 0,
+           editCompany: [],
+           companies: [],
+           companyid: 0,
            userInput: {
-               type: '',
-               transaction_days: '',
+               code: '',
+               description: '',
                active: true
            },
-           isDone: true,
-           query: '',
+           isDone: true
        }
     },
     created(){
-        this.fetchsupplierTypes()
+        this.fetchCompanies()
     },
  
     methods:{
         searchData(){
-            this.banks = []
+            this.companies = []
             this.isDone = false
-            axios.post(`/supplier-types/search`, {
+            axios.post('/companies/search',{
                 value: this.query.toLowerCase()
-            }).then(res=>{
+            })
+            .then(response=>{
                 this.isDone = true
-                let result = res.data
+                let result = response.data
                 let holder = result.data
                 
                 if(holder.length == 0){
@@ -164,45 +169,53 @@ export default {
                         text: 'Data not Found'
                         
                     })
-                    this.fetchsupplierTypes()
+                    this.fetchCompanies()
+                    
                 }else{
-                     this.supplierTypes = []
-                     
                     holder.forEach(hold=>{
-                        this.supplierTypes.push({
+                        this.companies.push({
                             id: hold.id,
-                            type: hold.type.toUpperCase(),
-                            transaction_days: hold.transaction_days,
+                            company_code: hold.company_code,
+                            company_description: hold.company_description.toUpperCase(),
                             created_at: moment(hold.created_at).format('LL')
                         })
-                    })        
-                } 
-                
-            }).catch(err=>{
-                console.log(err)
+                    })    
+                }    
+            })
+            .catch(error => {
+                console.log(error)
             })
         },
         cancelUpdate(){
             this.editMode = false
             this.userInput.id = ''
-            this.userInput.type = ''
-            this.userInput.transaction_days = ''
+            this.userInput.code = ''
+            this.userInput.description = ''
         },
-        updateMode(id, type, transaction_days){
-            console.log(id, type, transaction_days)
+        updateMode(id, code, description){
             this.editMode = true
             this.editId = id
-            this.userInput.type = type
-            this.userInput.transaction_days = transaction_days
+            this.userInput.code = code
+            this.userInput.description = description
         },
-       
-        showEditModal(supplierType_id){
-            axios.get(`/supplier-types/${supplierType_id}`).then(res=>{
-                let holder = res.data
-                this.editsupplierType = holder.data
+        updateCompany(){
+            let company_id = this.editCompany.id
+            axios.put(`/companies/${company_id}`, {
+                company_code: this.editCompany.company_code,
+                company_description: this.editCompany.company_description,
+            }).then(()=>{
+                this.fetchCompanies()
+                $(`#myModal`).modal('toggle')
+
             })
         },
-        supplierTypeArchive(id){
+        showEditModal(company_id){
+            axios.get(`/companies/${company_id}`).then(res=>{
+                let holder = res.data
+                this.editCompany = holder.data
+            })
+        },
+        companyArchive(id){
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                 confirmButton: 'btn btn-success ml-2',
@@ -221,32 +234,30 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                     this.isDone = false
-                    axios.post(`/supplier-types/archive/${id}`).then(()=>{
+                    axios.post(`/companies/archive/${id}`).then(()=>{
+
                         this.isDone = true
                         swalWithBootstrapButtons.fire(
                             'Archived!',
                             'Data has been moved to archive.',
                             'success'
                         )
-                        this.fetchsupplierTypes()
+                        this.fetchCompanies()
                     })
-
-
-
-                
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'Data not remove',
-                    'error'
-                )
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Data not remove',
+                        'error'
+                    )
                 }
             })
-            
+
         },
 
-        supplierTypeSave(){
+        companySave(){
             if(!this.editMode){
+
                 Swal.fire({
                     title: 'Do you want to save data?',
                     showDenyButton: true,
@@ -257,20 +268,20 @@ export default {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.post('/supplier-types', {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
+                        axios.post('/companies', {
+                            company_code: this.userInput.code.toLowerCase(),
+                            company_description: this.userInput.description.toLowerCase(),
                             is_active: true
                         }).then(()=>{
                             this.isDone = true
-                            Swal.fire('Saved!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            Swal.fire('Saved!', '', 'success')  
+                            this.fetchCompanies()
+                            this.userInput.code = ''
+                            this.userInput.description = '' 
                         }).catch(err=>{
                             let msg = err.response.data.errors
                             this.isDone = true
-                            console.log(msg)
-                            Swal.fire(msg.type[0], 'Data not Saved', 'warning')
+                            Swal.fire(msg.company_code[0], 'Data not Saved', 'warning')
                         })
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
@@ -288,35 +299,43 @@ export default {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.put(`/supplier-types/${this.editId}`, {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
+                        axios.put(`/companies/${this.editId}`, {
+                            company_code: this.userInput.code.toLowerCase(),
+                            company_description: this.userInput.description.toLowerCase()
                         }).then(()=>{
                             this.isDone = true
                             Swal.fire('Updated!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            this.fetchCompanies()
+                            this.userInput.code = ''
+                            this.userInput.description = '' 
+                            this.editMode = false
+
+                        }).catch(err=>{
+                            let msg = err.response.data.errors
+                            this.isDone = true
+                            Swal.fire(msg.company_code[0], '', 'warning')
                         })
+                        
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
                     }
-                })
+                })                
             }
             
         },
     
-        fetchsupplierTypes(){
-            this.supplierTypes = []
-            axios.get('/supplier-types?is_active=active')
+        fetchCompanies(){
+            this.companies = []
+            axios.get('/companies?is_active=active')
             .then(response=>{
                 let result = response.data
                 let holder = result.data
                 
                 holder.data.forEach(hold=>{
-                    this.supplierTypes.push({
+                    this.companies.push({
                         id: hold.id,
-                        type: hold.type.toUpperCase(),
-                        transaction_days: hold.transaction_days,
+                        company_code: hold.company_code,
+                        company_description: hold.company_description.toUpperCase(),
                         created_at: moment(hold.created_at).format('LL')
                     })
                 })        

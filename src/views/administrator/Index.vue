@@ -35,13 +35,17 @@
           
             <router-link :to="{name: 'AddUser'}">
           
-              <button class="request-btn" type="button">New User</button>
+              <button class="btn btn-success mb-1" type="button">New User</button>
             </router-link>
         </template>
 
         <template v-slot:tb-btn-tab>
           
                     
+        </template>
+
+        <template v-slot:tb-search>
+          <input type="text" @keyup.enter="searchData()" v-model="query" placeholder="Search">
         </template>
         <template v-slot:tb-header>
           <th>Full Name</th>
@@ -52,17 +56,18 @@
           <th>Inactive Date</th>
           <th class="text-center">Action</th>
         </template>
-
+        
         <template v-slot:tb-data>
 
           
-          <tr v-for="user in users" :key="user.id" class="hovered">
+          <tr v-for="user in users.data" :key="user.id" class="hovered">
             <td>
-              {{ `${user.lastname.toUpperCase()}, ${user.firstname.toUpperCase()} ${user.middlename[0].toUpperCase()}.` }}
+              {{ `${user.last_name.toUpperCase()}, ${user.first_name.toUpperCase()} ${user.middle_name[0].toUpperCase()}.` }}
             </td>
 
             <td>
-              {{ user.username }}
+              {{ `${user.username }`}} 
+
             </td>
 
             <td>
@@ -74,7 +79,7 @@
             </td>
 
             <td>
-              date-back end
+              {{ user.created_at }}
             </td>
             
             <td>
@@ -85,7 +90,7 @@
            
             <td class="text-center">
                 
-                <button class="btn btn-success btn-sm btn-show-parent"  data-toggle="modal" :data-target="`#myModal${user.id}`">
+                <button class="btn btn-success btn-sm btn-show-parent"  data-toggle="modal" data-target="#myModalView" @click="userDataView(user.id)">
                   <span class="material-icons btn-show">visibility</span>
                   View</button>
                 
@@ -103,58 +108,76 @@
                     <span class="material-icons btn-delete">delete</span>
                     Archive
                   </button>
+
                 
             </td>
 
+            
+
 
                   <!-- MODAL FOR REQUEST -->
-      <Modal :id="`myModal${user.id}`" role="dialog">
-
-        <template id="create-user-modal" v-slot:modal-body>
-          <h3 class="text-primary">
-            {{ `${user.lastname.toUpperCase()}, ${user.firstname.toUpperCase()} ${user.middlename[0].toUpperCase()}.` }}
-          </h3>
-          <p class="status mt-2"><strong>{{user.role}}</strong></p>
-          <hr class="mb-2">
-          <div class="grid-info">
-            <p class="status"><strong>Username: </strong>{{ user.username }}</p>
-            <p class="status"><strong>Employee ID: </strong>{{ user.user_id }}</p>
-            <p class="status"><strong>Department: </strong>{{ user.department }}</p>
-    
-          </div>
-
-          <div class="grid-info">
-            <div class="header">
-              Privileges
-            </div>
-            
-            <span class="dt-grid-2">
-              <div class="dt-ui" v-for="dt in user.permissions" :key="dt">{{ dt }}</div>
-            </span>
-          </div>
-          
-
-          <div class="grid-info mt-3" v-if="user.document_type.length">
-            <div class="header">
-              Document Type
-            </div>
-            
-            <span class="dt-grid">
-              <div class="dt-ui" v-for="dt in user.document_type" :key="dt">{{ dt }}</div>
-            </span>
-          </div>
-          
-          
-        </template>
-      </Modal>
+      
       <!-- USER MODAL -->
-
-            
+ 
         </tr>
         </template>
       </DataTable>
 
-      <h1>{{ apis }}</h1>
+      <Modal id="myModalView" role="dialog">
+        <h1>ok</h1>
+        <template v-slot:modal-header>
+          <p class="text-primary"><strong>
+            {{ modalData.last_name}}, {{ modalData.first_name}} {{ modalData.middle_name }}.
+          </strong></p>
+          
+        </template>
+        <template id="create-user-modal" v-slot:modal-body>
+          
+            <p><strong>Employee ID: </strong><em> {{ modalData.id_no}} </em></p><br>
+            <p><strong>Position: </strong> <em>{{ modalData.position }}</em></p><br>
+            <p><strong>Department: </strong> <em>{{ modalData.department }}</em></p><br>
+            <p><strong>Role: </strong> <em>{{ modalData.role }}</em></p>
+            <div class="col-md-12 bg-primary py-1 mt-2 text-center">
+              <p class="text-white text-center"><strong>Privileges</strong></p>
+            </div>
+         
+          <div class="modal-grid-1 mt-1">
+            <div class="text-center modal-flex-1 mt-1 py-1" v-for="(perm, index) in modalData.permissions" :key="index">
+              {{ perm }}
+            </div>  
+          </div>
+          <span v-if="userDocs.length">
+            <div class="col-md-12 bg-primary py-1 mt-2 text-center" >
+              <p class="text-white text-center"><strong> Document Types</strong></p>
+            </div>
+
+            <div class="modal-grid-1 mt-1">
+              <div class="text-center modal-flex-1 mt-1 py-1 dt-hover" v-for="(ud, index) in userDocs" :key="index" @click="showHiddenCategory(ud.id, ud.user, ud.type)">
+                {{ ud.type }}
+              </div> 
+            </div>
+          </span>
+          <transition tag="span" name="show-categories" appear v-if="userCategory.categories.length != 0">
+            <div class="child">
+              <div class="col-md-12 bg-primary py-1 mt-2 text-center">
+                <p class="text-white text-center"><strong> {{ userCategory.name }} Category</strong></p>
+              </div>
+              <div class="modal-grid-1 mt-1">
+                <div class="text-center modal-flex-1 mt-1 py-1" v-for="(cat, index) in userCategory.categories" :key="index">
+                  {{ cat }}
+                </div> 
+              </div>
+            </div>
+          </transition>
+
+          
+
+
+         
+          
+        </template>
+      </Modal>
+
       
 
       </span>
@@ -172,7 +195,6 @@ import DataTable from '../../components/shared-components/DataTable'
 import Modal from '../../components/non-shared/UserDetailModal'
 import Loading from '../../components/shared-components/Loading'
 import {mapState} from 'vuex'
-import vSelect from 'vue-select'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -184,6 +206,7 @@ export default {
         api: [],
         password: "",
         role: "",
+        middleName: "",
         userData:{
           employeeId: "",
           fullName: "",
@@ -191,7 +214,14 @@ export default {
           department: "",
           role: "",
           permissions: []
-        }
+        },
+        modalData: [],
+        userDocs: [],
+        userCategory: {
+          name: '',
+          categories: []
+        },
+        catIdHolder: null
       }
     },
     created(){
@@ -199,6 +229,7 @@ export default {
         this.$store.dispatch('loadUsers')
 
         this.$store.dispatch('loadPermissions')
+
     },
     computed:{
         
@@ -211,6 +242,71 @@ export default {
         
     },
     methods:{
+      searchData(){
+        alert("ok")
+      },
+      clearCategory(){
+        this.userCategory.name = ""
+        this.userCategory.categories = []
+      },
+      showHiddenCategory(doc_id, user,  doc_type){
+        if(doc_type != this.userCategory.name){
+          this.clearCategory()
+          axios.get(`/users/${user}`).then(res=>{
+            let userCat = res.data
+            if(userCat.document_types[0].categories.length){
+              axios.get(`/categories/all`).then(res=>{
+                
+                console.log('catHolder', catIdHolder)
+                userCat.document_types.forEach(docid=>{
+                  if(docid.document_id == doc_id){
+                    docid.categories.forEach(cat=>{
+                    
+                      this.catIdHolder.forEach(holder=>{
+                        
+                        if(cat == holder.id){
+                          console.log(holder.name)
+                          this.userCategory.name = doc_type
+                          this.userCategory.categories.push(holder.name)
+                        }
+                      })
+                    })
+                  }
+                })
+              })
+            }
+
+          })
+        }
+      },
+      userDataView(user_id){
+        this.clearCategory()
+        this.permission = []
+        this.userDocs = []
+        axios.get(`/users/${user_id}`).then(res=>{
+          this.modalData = res.data
+          console.log(this.modalData)
+          this.modalData.permissions.forEach(permission=>{
+            this.permissions.push(permission)
+            console.log(permission)
+          })
+
+          console.log(this.modalData)
+          
+            axios.get(`/documents?is_active=active`).then(res=>{
+               let document = res.data
+               document.forEach(doc=>{
+                 this.modalData.document_types.forEach(md=>{
+                   if(doc.document_id == md.document_id){
+                     this.userDocs.push({ id: doc.document_id, type: doc.document_type, user: user_id})
+
+                   }
+                 })
+
+               })
+            })
+        })
+      },
       // getSinglePost(id){        
       //    this.posts.filter(post => post.id = id)   
       // },
@@ -218,26 +314,14 @@ export default {
       // }
 
       findEmployee(eid){
-        axios.get(`/api?employee_id=${eid}`).then(response=>{
-        this.api = response.data
-        if (this.api.length){
-          this.result = true;
-          this.password = this.employeeId
-        }else{
-          this.result = false;
-          this.password = ""
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+        
     },
 
     archive(uid){
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-danger'
+          confirmButton: 'btn btn-success ml-2',
+          cancelButton: 'btn btn-danger ml-2'
         },
         buttonsStyling: false
       })
@@ -258,9 +342,9 @@ export default {
             'success'
           )
 
-          axios.delete(`/users/${uid}`).then(()=>{
+          axios.post(`/users/archive/${uid}`).then(()=>{
             this.$store.dispatch('loadUsers')
-            console.log('data deleted')
+            
           })
           
         } else if (
@@ -269,7 +353,7 @@ export default {
         ) {
           swalWithBootstrapButtons.fire(
             'Cancelled',
-            'Your imaginary file is safe :)',
+            'Data not remove',
             'error'
           )
         }
@@ -282,6 +366,48 @@ export default {
 </script>
 
 <style scoped>
+.show-categories-enter-from{
+  opacity: 0;
+  transform: scale(.3);
+}
+
+.show-categories-enter-active{
+  transition:all .3s ease;
+}
+
+
+.show-categories-leave-to{
+  opacity: 0;
+  transform: scale(.3);
+}
+
+.show-categories-leave-active{
+  transition:all .3s ease;
+}
+
+.dt-hover:hover{
+  background:rgb(136, 136, 136);
+  color:white;
+  cursor:pointer;
+  
+  transition:all .3s ease;
+}
+
+.modal-grid-1{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  grid-auto-rows:minmax(50px, auto);
+  gap:5px;
+}
+
+.modal-flex-1{
+  background:#ccc;
+  padding:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:5px;
+}
 .dt-grid{
   display:grid;
   grid-template-columns:repeat(4, 1fr);
@@ -360,7 +486,6 @@ export default {
 }
 
 form{
-  border:3px solid red;
   min-height:600px;
 }
 

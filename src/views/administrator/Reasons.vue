@@ -12,50 +12,46 @@
             <div class="loader-container" v-if="!isDone">
                 <Loading class="loader"/>
             </div>
+
             <div class="row">
                 <div class="col-md-4 pl-4 mt-2">
-                    <form @submit.prevent="supplierTypeSave()" autocomplete="off">
+                    <form @submit.prevent="reasonSave()" autocomplete="off">
                         <div class="form-group">
-                            <label for="category">Type</label>
-                            <input type="text" class="form-control" id="supplierType-type" required v-model="userInput.type">
+                            <label for="category">Reason</label>
+                            <input type="text" class="form-control" id="company-code" v-model="userInput.reason">
                         </div>
 
                         <div class="form-group">
-                            <label for="category">Transaction Days</label>
-                            <input type="number" class="form-control" id="supplierType-transaction_days" required  v-model="userInput.transaction_days">
+                            <label for="category">Remarks</label>
+                            <input type="text" class="form-control" id="company-description"  v-model="userInput.remarks">
                         </div>
 
                         
 
                         <div class="form-group row">
-                            <div class="col-md-3 pr-0" v-if="!editMode">
-                
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                            <div class="col-md-3 pr-0" v-if="!updateMode">
+                                <span v-if="userInput.reason.length < 5 || userInput.remarks.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Save</button>
                                 </span>
                                 <span v-else>
                                     <button type="submit" class="btn btn-sm btn-success" >Save</button>
-                                </span>
-                            
+                                </span>   
                             </div>
 
                             <div class="col-md-3 pr-0" v-else>
-                
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                                <span v-if="userInput.reason.length < 5 || userInput.remarks.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Update</button>
                                 </span>
                                 <span v-else>
                                     <button type="submit" class="btn btn-sm btn-success" >Update</button>
-                                </span>
-                            
+                                </span>   
                             </div>
 
                             <div class="col-md-3 pl-1">
-                                <router-link :to="{name: 'Users'}" v-if="!editMode">
+                                <router-link :to="{name: 'Users'}" v-if="!updateMode">
                                     <button class="btn btn-sm btn-default">Back</button>     
                                 </router-link>
-                                <button class="btn btn-sm btn-default" @click="cancelUpdate()" v-else>Cancel</button>     
-
+                                    <button class="btn btn-sm btn-default" v-else @click="cancelEdit()">Cancel</button>     
                             </div>
                         </div>
                     </form>
@@ -67,6 +63,7 @@
 
         
         <template v-slot:tb-btn-tab>
+            
         </template>
 
         <template v-slot:tb-search>
@@ -75,27 +72,23 @@
         
         <template v-slot:tb-header>
           <th>ID #</th>
-          <th>Type</th>
-          <th>Transaction Days</th>
+          <th>Reason</th>
+          <th>Remarks</th>
           <!-- <th>Date Created</th> -->
           
           <th class="text-center">Action</th>
         </template>
         
         <template v-slot:tb-data>
-
-          <tr class="hovered" v-for="supplierType in supplierTypes" :key="supplierType.id">
-            <td>{{ supplierType.id }}</td>
-            <td>{{ supplierType.type }}</td>
-            <td>{{ supplierType.transaction_days }}</td>
-            <!-- <td>{{ supplierType.created_at }}</td> -->
+          <tr class="hovered" v-for="reason in reasons" :key="reason.id">
+            <td>{{ reason.id }}</td>
+            <td>{{ reason.reason }}</td>
+            <td>{{ reason.remarks }}</td>
+            <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" @click="updateMode(supplierType.id, supplierType.type, supplierType.transaction_days)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="supplierTypeArchive(supplierType.id)">Archive</button>
+                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(reason.id, reason.reason, reason.remarks)">Edit</button>
+                <button class="btn btn-sm btn-warning ml-1" @click="reasonArchive(reason.id)">Archive</button>
             </td> 
-        
-    
-
         </tr>
         </template>
       </DataTable>
@@ -129,28 +122,27 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
-           editId: null,
-           editMode: false,
-           supplierTypes: [],
-           supplierTypeid: 0,
+           updateMode: false,
+           reasons: [],
+           companyid: null,
            userInput: {
-               type: '',
-               transaction_days: '',
+               reason: '',
+               remarks: '',
                active: true
            },
            isDone: true,
-           query: '',
+           query: ''
        }
     },
     created(){
-        this.fetchsupplierTypes()
+        this.fetchReasons()
+        
     },
  
     methods:{
         searchData(){
-            this.banks = []
             this.isDone = false
-            axios.post(`/supplier-types/search`, {
+            axios.post(`/reasons/search`, {
                 value: this.query.toLowerCase()
             }).then(res=>{
                 this.isDone = true
@@ -164,15 +156,16 @@ export default {
                         text: 'Data not Found'
                         
                     })
-                    this.fetchsupplierTypes()
+                    this.fetchrefs()
+                    
                 }else{
-                     this.supplierTypes = []
+                    this.reasons = []
                      
                     holder.forEach(hold=>{
-                        this.supplierTypes.push({
+                        this.reasons.push({
                             id: hold.id,
-                            type: hold.type.toUpperCase(),
-                            transaction_days: hold.transaction_days,
+                            reason: hold.reason.toUpperCase(),
+                            remarks: hold.remarks.toUpperCase(),
                             created_at: moment(hold.created_at).format('LL')
                         })
                     })        
@@ -182,27 +175,29 @@ export default {
                 console.log(err)
             })
         },
-        cancelUpdate(){
-            this.editMode = false
-            this.userInput.id = ''
-            this.userInput.type = ''
-            this.userInput.transaction_days = ''
+        cancelEdit(){
+            this.updateMode = false
+            this.companyid = null
+            this.userInput.reason = ''
+            this.userInput.remarks = ''
         },
-        updateMode(id, type, transaction_days){
-            console.log(id, type, transaction_days)
-            this.editMode = true
-            this.editId = id
-            this.userInput.type = type
-            this.userInput.transaction_days = transaction_days
+        editMode(id, reason, remarks){
+            console.log("reason", id, reason, remarks)
+            this.updateMode = true
+            this.companyid = id
+            this.userInput.reason = reason
+            this.userInput.remarks = remarks
+
         },
-       
-        showEditModal(supplierType_id){
-            axios.get(`/supplier-types/${supplierType_id}`).then(res=>{
+
+        showEditModal(company_id){
+            axios.get(`/reasons/${company_id}`).then(res=>{
                 let holder = res.data
-                this.editsupplierType = holder.data
+                this.editReason = holder.data
             })
         },
-        supplierTypeArchive(id){
+        reasonArchive(id){
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                 confirmButton: 'btn btn-success ml-2',
@@ -221,19 +216,16 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                     this.isDone = false
-                    axios.post(`/supplier-types/archive/${id}`).then(()=>{
+                    axios.post(`/reasons/archive/${id}`).then(()=>{
                         this.isDone = true
                         swalWithBootstrapButtons.fire(
                             'Archived!',
                             'Data has been moved to archive.',
                             'success'
                         )
-                        this.fetchsupplierTypes()
+                        this.fetchReasons()
+                        this.cancelEdit()
                     })
-
-
-
-                
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                 swalWithBootstrapButtons.fire(
                     'Cancelled',
@@ -241,12 +233,12 @@ export default {
                     'error'
                 )
                 }
-            })
-            
+            }) 
         },
 
-        supplierTypeSave(){
-            if(!this.editMode){
+        reasonSave(){
+            // CHECK IF IT IS IN EDITING MODE
+            if(!this.updateMode){
                 Swal.fire({
                     title: 'Do you want to save data?',
                     showDenyButton: true,
@@ -257,27 +249,27 @@ export default {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.post('/supplier-types', {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
-                            is_active: true
+                        axios.post('/reasons', {
+                            reason: this.userInput.reason.toLowerCase(),
+                            remarks: this.userInput.remarks.toLowerCase(),
+                            is_active: 1
                         }).then(()=>{
                             this.isDone = true
                             Swal.fire('Saved!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            this.fetchReasons()
+                            this.userInput.reason = ''
+                            this.userInput.remarks = '' 
                         }).catch(err=>{
                             let msg = err.response.data.errors
                             this.isDone = true
-                            console.log(msg)
-                            Swal.fire(msg.type[0], 'Data not Saved', 'warning')
+                            Swal.fire(msg.reason[0], 'Data not Saved', 'warning')
                         })
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
                     }
                 })
-                
             }else{
+
                 Swal.fire({
                     title: 'Do you want to update this data?',
                     showDenyButton: true,
@@ -285,38 +277,43 @@ export default {
                     confirmButtonText: `Update`,
                     denyButtonText: `Don't update`,
                     }).then((result) => {
+                   
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.put(`/supplier-types/${this.editId}`, {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
+                        axios.put(`/reasons/${this.companyid}`, {
+                            reason: this.userInput.reason.toLowerCase(),
+                            remarks: this.userInput.remarks.toLowerCase(),
                         }).then(()=>{
                             this.isDone = true
                             Swal.fire('Updated!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            this.fetchReasons()
+                            this.cancelEdit()
+                        }).catch(err=>{
+                            let msg = err.response.data.errors
+                            this.isDone = true
+                            Swal.fire(msg.reason[0], 'Data not Updated', 'warning')
                         })
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
                     }
                 })
-            }
-            
+            }            
         },
     
-        fetchsupplierTypes(){
-            this.supplierTypes = []
-            axios.get('/supplier-types?is_active=active')
+        fetchReasons(){
+            this.reasons = []
+            axios.get('/reasons?is_active=active')
             .then(response=>{
                 let result = response.data
                 let holder = result.data
+                console.log(holder.data)
                 
                 holder.data.forEach(hold=>{
-                    this.supplierTypes.push({
+                    this.reasons.push({
                         id: hold.id,
-                        type: hold.type.toUpperCase(),
-                        transaction_days: hold.transaction_days,
+                        reason: hold.reason.toUpperCase(),
+                        remarks: hold.remarks.toUpperCase(),
                         created_at: moment(hold.created_at).format('LL')
                     })
                 })        
@@ -334,6 +331,7 @@ export default {
 
 
 <style scoped>
+
     .text-black{
         color:black;
     }

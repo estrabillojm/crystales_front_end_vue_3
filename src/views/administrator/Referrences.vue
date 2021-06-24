@@ -5,57 +5,49 @@
     </div>
     <div class="main-container">
     <Navbar/>
-
-        
-
         <div class="grid-header m5">
             <div class="loader-container" v-if="!isDone">
                 <Loading class="loader"/>
             </div>
             <div class="row">
                 <div class="col-md-4 pl-4 mt-2">
-                    <form @submit.prevent="supplierTypeSave()" autocomplete="off">
+                    <form @submit.prevent="refsave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Type</label>
-                            <input type="text" class="form-control" id="supplierType-type" required v-model="userInput.type">
+                            <input type="text" class="form-control" id="company-code" v-model="userInput.type">
                         </div>
 
                         <div class="form-group">
-                            <label for="category">Transaction Days</label>
-                            <input type="number" class="form-control" id="supplierType-transaction_days" required  v-model="userInput.transaction_days">
+                            <label for="category">Description</label>
+                            <input type="text" class="form-control" id="company-description"  v-model="userInput.description">
                         </div>
 
                         
 
                         <div class="form-group row">
-                            <div class="col-md-3 pr-0" v-if="!editMode">
-                
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                            <div class="col-md-3 pr-0" v-if="!updateMode">
+                                <span v-if="userInput.type.length < 5 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Save</button>
                                 </span>
                                 <span v-else>
                                     <button type="submit" class="btn btn-sm btn-success" >Save</button>
-                                </span>
-                            
+                                </span>   
                             </div>
 
                             <div class="col-md-3 pr-0" v-else>
-                
-                                <span v-if="userInput.type.length < 2 || userInput.transaction_days < 1">
+                                <span v-if="userInput.type.length < 5 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Update</button>
                                 </span>
                                 <span v-else>
                                     <button type="submit" class="btn btn-sm btn-success" >Update</button>
-                                </span>
-                            
+                                </span>   
                             </div>
 
                             <div class="col-md-3 pl-1">
-                                <router-link :to="{name: 'Users'}" v-if="!editMode">
+                                <router-link :to="{name: 'Users'}" v-if="!updateMode">
                                     <button class="btn btn-sm btn-default">Back</button>     
                                 </router-link>
-                                <button class="btn btn-sm btn-default" @click="cancelUpdate()" v-else>Cancel</button>     
-
+                                    <button class="btn btn-sm btn-default" v-else @click="cancelEdit()">Cancel</button>     
                             </div>
                         </div>
                     </form>
@@ -67,6 +59,7 @@
 
         
         <template v-slot:tb-btn-tab>
+   
         </template>
 
         <template v-slot:tb-search>
@@ -75,27 +68,23 @@
         
         <template v-slot:tb-header>
           <th>ID #</th>
-          <th>Type</th>
-          <th>Transaction Days</th>
+          <th>Referrence Type</th>
+          <th>Description</th>
           <!-- <th>Date Created</th> -->
           
           <th class="text-center">Action</th>
         </template>
         
         <template v-slot:tb-data>
-
-          <tr class="hovered" v-for="supplierType in supplierTypes" :key="supplierType.id">
-            <td>{{ supplierType.id }}</td>
-            <td>{{ supplierType.type }}</td>
-            <td>{{ supplierType.transaction_days }}</td>
-            <!-- <td>{{ supplierType.created_at }}</td> -->
+          <tr class="hovered" v-for="ref in refs" :key="ref.id">
+            <td>{{ ref.id }}</td>
+            <td>{{ ref.type }}</td>
+            <td>{{ ref.description }}</td>
+            <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" @click="updateMode(supplierType.id, supplierType.type, supplierType.transaction_days)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="supplierTypeArchive(supplierType.id)">Archive</button>
+                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(ref.id, ref.type, ref.description)">Edit</button>
+                <button class="btn btn-sm btn-warning ml-1" @click="refArchive(ref.id)">Archive</button>
             </td> 
-        
-    
-
         </tr>
         </template>
       </DataTable>
@@ -129,28 +118,27 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
-           editId: null,
-           editMode: false,
-           supplierTypes: [],
-           supplierTypeid: 0,
+           updateMode: false,
+           refs: [],
+           referenceid: null,
            userInput: {
                type: '',
-               transaction_days: '',
+               description: '',
                active: true
            },
            isDone: true,
-           query: '',
+           query: ''
        }
     },
     created(){
-        this.fetchsupplierTypes()
+        this.fetchrefs()
     },
  
     methods:{
         searchData(){
-            this.banks = []
+            this.refs = []
             this.isDone = false
-            axios.post(`/supplier-types/search`, {
+            axios.post(`/referrences/search`, {
                 value: this.query.toLowerCase()
             }).then(res=>{
                 this.isDone = true
@@ -164,45 +152,46 @@ export default {
                         text: 'Data not Found'
                         
                     })
-                    this.fetchsupplierTypes()
+                    this.fetchrefs()
+                    
                 }else{
-                     this.supplierTypes = []
-                     
                     holder.forEach(hold=>{
-                        this.supplierTypes.push({
+                        this.refs.push({
                             id: hold.id,
-                            type: hold.type.toUpperCase(),
-                            transaction_days: hold.transaction_days,
+                            type: hold.referrence_type,
+                            description: hold.referrence_description.toUpperCase(),
                             created_at: moment(hold.created_at).format('LL')
                         })
-                    })        
+                    })   
                 } 
                 
             }).catch(err=>{
                 console.log(err)
             })
         },
-        cancelUpdate(){
-            this.editMode = false
-            this.userInput.id = ''
+        cancelEdit(){
+            this.updateMode = false
+            this.referenceid = null
             this.userInput.type = ''
-            this.userInput.transaction_days = ''
+            this.userInput.description = ''
         },
-        updateMode(id, type, transaction_days){
-            console.log(id, type, transaction_days)
-            this.editMode = true
-            this.editId = id
-            this.userInput.type = type
-            this.userInput.transaction_days = transaction_days
+        editMode(id, ref, type){
+            console.log("ref", id, ref, type)
+            this.updateMode = true
+            this.referenceid = id
+            this.userInput.type = ref
+            this.userInput.description = type
+
         },
-       
-        showEditModal(supplierType_id){
-            axios.get(`/supplier-types/${supplierType_id}`).then(res=>{
+
+        showEditModal(company_id){
+            axios.get(`/referrences/${company_id}`).then(res=>{
                 let holder = res.data
-                this.editsupplierType = holder.data
+                this.editref = holder.data
             })
         },
-        supplierTypeArchive(id){
+        refArchive(id){
+
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                 confirmButton: 'btn btn-success ml-2',
@@ -219,21 +208,18 @@ export default {
                 cancelButtonText: 'No, cancel!',
                 reverseButtons: true
             }).then((result) => {
-                if (result.isConfirmed) {
-                    this.isDone = false
-                    axios.post(`/supplier-types/archive/${id}`).then(()=>{
-                        this.isDone = true
-                        swalWithBootstrapButtons.fire(
-                            'Archived!',
-                            'Data has been moved to archive.',
-                            'success'
-                        )
-                        this.fetchsupplierTypes()
-                    })
-
-
-
-                
+                if (result.isConfirmed) {   
+                this.isDone = false
+                axios.post(`/referrences/archive/${id}`).then(()=>{
+                    this.isDone = true
+                    swalWithBootstrapButtons.fire(
+                        'Archived!',
+                        'Data has been moved to archive.',
+                        'success'
+                    )
+                    this.fetchrefs()
+                    this.cancelEdit()
+                })
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                 swalWithBootstrapButtons.fire(
                     'Cancelled',
@@ -241,12 +227,11 @@ export default {
                     'error'
                 )
                 }
-            })
-            
+            })  
         },
 
-        supplierTypeSave(){
-            if(!this.editMode){
+        refsave(){
+            if(!this.updateMode){
                 Swal.fire({
                     title: 'Do you want to save data?',
                     showDenyButton: true,
@@ -257,27 +242,27 @@ export default {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.post('/supplier-types', {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
+                        axios.post('/referrences', {
+                            referrence_type: this.userInput.type.toLowerCase(),
+                            referrence_description: this.userInput.description.toLowerCase(),
                             is_active: true
                         }).then(()=>{
                             this.isDone = true
                             Swal.fire('Saved!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            this.fetchrefs()
+                            this.userInput.type = ''
+                            this.userInput.description = '' 
                         }).catch(err=>{
                             let msg = err.response.data.errors
                             this.isDone = true
-                            console.log(msg)
-                            Swal.fire(msg.type[0], 'Data not Saved', 'warning')
+                            Swal.fire(msg.referrence_type[0], 'Data not Saved', 'warning')
                         })
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
                     }
                 })
-                
             }else{
+
                 Swal.fire({
                     title: 'Do you want to update this data?',
                     showDenyButton: true,
@@ -288,35 +273,42 @@ export default {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         this.isDone = false
-                        axios.put(`/supplier-types/${this.editId}`, {
-                            type: this.userInput.type.toLowerCase(),
-                            transaction_days: this.userInput.transaction_days,
+                        axios.put(`/referrences/${this.referenceid}`, {
+                            referrence_type: this.userInput.type.toLowerCase(),
+                            referrence_description: this.userInput.description.toLowerCase(),
                         }).then(()=>{
                             this.isDone = true
                             Swal.fire('Updated!', '', 'success')
-                            this.fetchsupplierTypes()
-                            this.cancelUpdate()
+                            this.fetchrefs()
+                            this.cancelEdit()
+                        }).catch(err=>{
+                            let msg = err.response.data.errors
+                            this.isDone = true
+                            Swal.fire(msg.referrence_type[0], 'Data not Updated', 'warning')
                         })
                     } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')
                     }
                 })
-            }
-            
+            }    
+                
+          
         },
     
-        fetchsupplierTypes(){
-            this.supplierTypes = []
-            axios.get('/supplier-types?is_active=active')
+        fetchrefs(){
+            this.refs = []
+            axios.get('/referrences?is_active=active')
             .then(response=>{
                 let result = response.data
+                console.log(result)
                 let holder = result.data
                 
+                
                 holder.data.forEach(hold=>{
-                    this.supplierTypes.push({
+                    this.refs.push({
                         id: hold.id,
-                        type: hold.type.toUpperCase(),
-                        transaction_days: hold.transaction_days,
+                        type: hold.referrence_type,
+                        description: hold.referrence_description.toUpperCase(),
                         created_at: moment(hold.created_at).format('LL')
                     })
                 })        

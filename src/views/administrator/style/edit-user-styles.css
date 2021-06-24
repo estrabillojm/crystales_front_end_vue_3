@@ -1,0 +1,110 @@
+
+.headerInfo-enter-from{
+    opacity:0;
+    transform:translateY(-50px);
+}
+
+.headerInfo-enter-active{
+    transition:all .8s ease;
+}
+.header-info-enter-from{
+    transform: translateY(-50px);
+    opacity:0;
+}
+
+.header-info-leave-to{
+    transform: translateY(-50px);
+    opacity:0;
+}
+
+.headersub-enter-from{
+    transform: translateX(-580px);
+    opacity:0;
+}
+
+.header-info-enter-active{
+    transition:all .7s ease;
+}
+
+.header-info-leave-active{
+    transition:all 10s ease;
+}
+
+.headersub-enter-active{
+    transition:all .3s ease;
+}
+
+
+.disable{
+    cursor:not-allowed;
+}
+.permissions_cb, .doctype_cb{
+    cursor:pointer;
+}
+
+.btn-disabled{
+    cursor: not-allowed;
+}
+
+.employee-list{
+    min-width:500px !important;
+}
+
+
+
+p{
+    display:inline;
+    text-transform:uppercase;
+    color:rgb(97, 97, 97);
+}
+
+span.username{
+    text-transform:lowercase;
+}
+
+.grid-check{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr)
+}
+
+
+.auser form{
+    min-width:80%;
+}
+.add-user{
+    display:flex;
+    justify-content:center;
+}
+.form-group *{
+    width:100%;
+}
+
+.form-group input{
+    width:100%;
+}
+
+.grid-container{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    position:relative;   
+}
+
+.user-info{
+    grid-column:2/4;
+    overflow:auto;
+}
+
+.auser:nth-child(1){
+    border-right:1px solid rgb(228, 227, 227);
+}
+
+.auser{
+    
+    height:calc(100vh - 80px);
+    padding:10px;
+    box-sizing:border-box;
+
+}
+
+    

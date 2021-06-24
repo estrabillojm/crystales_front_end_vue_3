@@ -1,228 +1,256 @@
 {
   "users": [
+    
+  ],
+  "documents": [
     {
-      "user_id": "101",
-      "username": "jestrabillo-101",
-      "lastname": "Estrabillo",
-      "middlename": "borlongan",
-      "firstname": "John Michael",
-      "role": "Requestor",
-      "document_type": [
-        "PRM"
+      "document_type": "prm",
+      "document_description": "prm description",
+      "categories": [
+        1,
+        4,
+        7,
+        10,
+        13,
+        16,
+        17,
+        14,
+        11,
+        8,
+        5,
+        2,
+        3,
+        6,
+        9,
+        12,
+        15
       ],
-      "permissions": [
-        "Tagging of Request"
+      "id": 1
+    },
+    {
+      "document_type": "contractor's billing",
+      "document_description": "contractor's billing description",
+      "categories": [
+        21,
+        19,
+        18,
+        16,
+        3
       ],
-      "prm_categories": [
-        "rentals",
-        "loans",
-        "comission",
-        "salaries of physician and dentist",
-        "mancom fund",
-        "garbage disposal",
-        "down payment",
-        "farm expenses"
+      "id": 2
+    },
+    {
+      "document_type": "pad",
+      "document_description": "pad description",
+      "categories": [],
+      "id": 3
+    },
+    {
+      "document_type": "receipt",
+      "document_description": "receipt description\n",
+      "categories": [
+        1,
+        4,
+        2,
+        5,
+        17,
+        18,
+        15
       ],
-      "contractor_categories": [],
-      "password": "jestrabillo-101",
-      "department": "MIS",
       "id": 4
     },
     {
-      "user_id": "101",
-      "username": "jestrabillo-101",
-      "lastname": "Estrabillo",
-      "middlename": "borlongan",
-      "firstname": "John Michael",
-      "role": "Requestor",
-      "document_type": [
-        "PRM",
-        "Contractor's Billing"
+      "document_type": "utitlities",
+      "document_description": "utilities description",
+      "categories": [
+        1
       ],
-      "permissions": [
-        "Tagging of Request"
-      ],
-      "prm_categories": [
-        "rentals",
-        "confidential request"
-      ],
-      "contractor_categories": [
-        "down payment",
-        "retention",
-        "100% payment"
-      ],
-      "password": "jestrabillo-101",
-      "department": "MIS",
       "id": 5
     },
     {
-      "user_id": "101",
-      "username": "jestrabillo-101",
-      "lastname": "Estrabillo",
-      "middlename": "borlongan",
-      "firstname": "John Michael",
-      "role": "GAS",
-      "document_type": [],
-      "permissions": [
-        "Identifying of Receipt",
-        "Matching of Voucher"
-      ],
-      "prm_categories": [],
-      "contractor_categories": [],
-      "password": "jestrabillo-101",
-      "department": "MIS",
+      "document_type": "payroll",
+      "document_description": "payroll description",
+      "categories": [],
       "id": 6
     },
     {
-      "user_id": "102",
-      "username": "jborlongan-102",
-      "lastname": "Borlongan",
-      "middlename": "borlongan",
-      "firstname": "JM",
-      "role": "Requestor",
-      "document_type": [
-        "PRM",
-        "Contractor's Billing",
-        "PAD",
-        "PCF",
-        "Receipt",
-        "Utilities"
-      ],
-      "permissions": [
-        "Tagging of Request",
-        "Tagging and Vouchering",
-        "Checking of Voucher",
-        "Matching of Voucher"
-      ],
-      "prm_categories": [
-        "rentals",
-        "loans",
-        "coop loans and dues",
-        "cash flow for new store",
-        "meat entry fee",
-        "comission",
-        "leasing",
-        "funds",
-        "payment for supplier",
-        "government benefits",
-        "billing",
-        "salaries of physician and dentist",
-        "maternity leave",
-        "mancom fund",
-        "garbage disposal",
-        "down payment",
-        "farm expenses"
-      ],
-      "contractor_categories": [
-        "down payment",
-        "progress billing",
-        "100% payment",
-        "retention",
-        "additional works"
-      ],
-      "password": "jborlongan-102",
-      "department": "MIS",
+      "document_type": "pcf",
+      "document_description": "pcf description",
+      "categories": [],
       "id": 7
+    },
+    {
+      "document_type": "new document type",
+      "document_description": "dfsasdfa",
+      "categories": [
+        1,
+        4,
+        5,
+        8,
+        11,
+        12
+      ],
+      "id": 8
     }
   ],
-  "document_types": [
-    {
-      "id": 1,
-      "name": "PAD"
-    },
-    {
-      "id": 2,
-      "name": "PRM"
-    },
+  "api": [
     {
       "id": 3,
-      "name": "Receipt"
+      "prefix_id": "RDFFLFI",
+      "id_number": 10100,
+      "department": "MIS",
+      "position": "Mobile and Web",
+      "first_name": "Micha",
+      "last_name": "Estra",
+      "middle_name": "borlo",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
     },
     {
       "id": 4,
-      "name": "Contractor's Billing"
-    },
-    {
-      "id": 5,
-      "name": "Utilities"
+      "prefix_id": "RDFFLFI",
+      "id_number": 10196,
+      "department": "MIS",
+      "position": "Mobile and Web",
+      "first_name": "Uname",
+      "last_name": "Lname",
+      "middle_name": "Mname",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
     },
     {
       "id": 6,
-      "name": "Payroll"
-    },
-    {
-      "id": 7,
-      "name": "PCF"
+      "prefix_id": "RDFFLFI",
+      "id_number": 10002,
+      "department": "MIS",
+      "position": "Mobile and Web",
+      "first_name": "sample fname",
+      "last_name": "sample lname",
+      "middle_name": "sample mname",
+      "civil_status": "single",
+      "gender": "male",
+      "date_of_birth": "04/06/1994",
+      "brgy": "brgy 1",
+      "municipality": "municipality 1",
+      "province": "province 1",
+      "region": "region 1"
     }
   ],
-  "department": [
+  "category": [
     {
-      "id": 1,
-      "name": "MIS"
+      "name": "rentals",
+      "is_active": 1,
+      "id": 1
     },
     {
-      "id": 2,
-      "name": "HR"
+      "name": "loans",
+      "is_active": 1,
+      "id": 2
     },
     {
-      "id": 3,
-      "name": "D1"
+      "name": "coop loans and dues",
+      "is_active": 1,
+      "id": 3
     },
     {
-      "id": 4,
-      "name": "D2"
+      "name": "cash flow for new store",
+      "is_active": 1,
+      "id": 4
     },
     {
-      "id": 5,
-      "name": "D3"
+      "name": "meat entry fee",
+      "is_active": 1,
+      "id": 5
     },
     {
-      "id": 6,
-      "name": "D4"
-    }
-  ],
-  "supplier": [
-    {
-      "id": 1,
-      "name": "Supplier 1"
+      "name": "comission",
+      "is_active": 1,
+      "id": 6
     },
     {
-      "id": 2,
-      "name": "Supplier 2"
+      "name": "leasing",
+      "is_active": 1,
+      "id": 7
     },
     {
-      "id": 3,
-      "name": "Supplier 3"
+      "name": "funds",
+      "is_active": 1,
+      "id": 8
     },
     {
-      "id": 4,
-      "name": "Supplier 4"
+      "name": "payment for supplier",
+      "is_active": 1,
+      "id": 9
     },
     {
-      "id": 5,
-      "name": "Supplier 5"
-    }
-  ],
-  "bank": [
-    {
-      "id": 1,
-      "name": "Bank 1"
+      "name": "government benefits",
+      "is_active": 1,
+      "id": 10
     },
     {
-      "id": 2,
-      "name": "Bank 2"
+      "name": "billing",
+      "is_active": 1,
+      "id": 11
     },
     {
-      "id": 3,
-      "name": "Bank 3"
+      "name": "salaries of physican and dentist",
+      "is_active": 1,
+      "id": 12
     },
     {
-      "id": 4,
-      "name": "Bank 4"
+      "name": "maternity leave",
+      "is_active": 1,
+      "id": 13
     },
     {
-      "id": 5,
-      "name": "Bank 5"
+      "name": "mancom fund",
+      "is_active": 1,
+      "id": 14
+    },
+    {
+      "name": "garbage disposal",
+      "is_active": 1,
+      "id": 15
+    },
+    {
+      "name": "down payment",
+      "is_active": 1,
+      "id": 16
+    },
+    {
+      "name": "confidential request",
+      "is_active": 1,
+      "id": 17
+    },
+    {
+      "name": "progress billing",
+      "is_active": 1,
+      "id": 18
+    },
+    {
+      "name": "100% payment",
+      "is_active": 1,
+      "id": 19
+    },
+    {
+      "name": "retention",
+      "is_active": 1,
+      "id": 20
+    },
+    {
+      "name": "additional works",
+      "is_active": 1,
+      "id": 21
     }
   ],
   "permissions": [
@@ -305,149 +333,6 @@
     {
       "id": 20,
       "name": "Tagging of Document"
-    }
-  ],
-  "prm_category": [
-    {
-      "id": 1,
-      "name": "rentals"
-    },
-    {
-      "id": 2,
-      "name": "loans"
-    },
-    {
-      "id": 3,
-      "name": "coop loans and dues"
-    },
-    {
-      "id": 4,
-      "name": "cash flow for new store"
-    },
-    {
-      "id": 5,
-      "name": "meat entry fee"
-    },
-    {
-      "id": 6,
-      "name": "comission"
-    },
-    {
-      "id": 7,
-      "name": "leasing"
-    },
-    {
-      "id": 8,
-      "name": "funds"
-    },
-    {
-      "id": 9,
-      "name": "payment for supplier"
-    },
-    {
-      "id": 10,
-      "name": "government benefits"
-    },
-    {
-      "id": 12,
-      "name": "billing"
-    },
-    {
-      "id": 13,
-      "name": "salaries of physician and dentist"
-    },
-    {
-      "id": 14,
-      "name": "maternity leave"
-    },
-    {
-      "id": 15,
-      "name": "mancom fund"
-    },
-    {
-      "id": 16,
-      "name": "garbage disposal"
-    },
-    {
-      "id": 17,
-      "name": "down payment"
-    },
-    {
-      "id": 18,
-      "name": "farm expenses"
-    },
-    {
-      "id": 19,
-      "name": "confidential request"
-    }
-  ],
-  "contractor_category": [
-    {
-      "id": 1,
-      "name": "down payment"
-    },
-    {
-      "id": 2,
-      "name": "progress billing"
-    },
-    {
-      "id": 3,
-      "name": "100% payment"
-    },
-    {
-      "id": 4,
-      "name": "retention"
-    },
-    {
-      "id": 5,
-      "name": "additional works"
-    }
-  ],
-  "api": [
-    {
-      "id": 1,
-      "id_number": 101,
-      "department": "MIS",
-      "firstname": "John Michael",
-      "lastname": "Estrabillo",
-      "middlename": "borlongan",
-      "civil_status": "single",
-      "gender": "male",
-      "date_of_birth": "04/06/1994",
-      "brgy": "brgy 1",
-      "municipality": "municipality 1",
-      "province": "province 1",
-      "region": "region 1"
-    },
-    {
-      "id": 2,
-      "id_number": 102,
-      "department": "MIS",
-      "firstname": "JM",
-      "lastname": "Borlongan",
-      "middlename": "borlongan",
-      "civil_status": "single",
-      "gender": "male",
-      "date_of_birth": "04/06/1994",
-      "brgy": "brgy 1",
-      "municipality": "municipality 1",
-      "province": "province 1",
-      "region": "region 1"
-    },
-    {
-      "id": 3,
-      "id_number": 103,
-      "department": "MIS",
-      "firstname": "John",
-      "lastname": "EB",
-      "middlename": "borlongan",
-      "civil_status": "single",
-      "gender": "male",
-      "date_of_birth": "04/06/1994",
-      "brgy": "brgy 1",
-      "municipality": "municipality 1",
-      "province": "province 1",
-      "region": "region 1"
     }
   ]
 }

@@ -7,6 +7,23 @@
 *{
   padding:0;
   margin:0;
+  box-sizing:border-box;
+}
+
+input[type="checkbox"], label{
+  cursor:pointer;
+}
+
+label{
+  font-weight:550;
+}
+
+select, input[type="date"]{
+  cursor: pointer;
+}
+
+em{
+  font-weight:100;
 }
 
 .error{
@@ -80,21 +97,14 @@
 }
 
 
-.cr-data-btn ul .request-btn{
-  background:#34D206;
-}
+
 
 .cr-data-btn ul button:focus{
   outline:none;
   border:none;
 }
-.cr-data-btn ul.request button:hover{
-    background:#6dd84d;
-}
 
-.cr-data-btn ul button:hover{
-  background:#223a63;
-}
+
 
 
 
@@ -102,7 +112,6 @@
   padding: 5px 20px;
   border:none;
   cursor:pointer;
-  background:#172B4D;
   opacity:.81;
   color:white;
 }
@@ -115,6 +124,7 @@
 
 .cr-data-content{
   background:#172B4D;
+  border-radius:10px;
   width:100%;
   
   margin-top:0;
@@ -148,6 +158,8 @@
 
 .flex-table table{
   width:100%;
+  border-radius:15px !important;
+ 
 }
 
 .flex-table .thead{

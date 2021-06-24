@@ -6,178 +6,185 @@
     <div class="main-container">
     <Navbar/>
 
+    <div class="loader-container" v-if="!isDone">
+        <Loading class="loader"/>
+    </div>
+
     <div class="grid-container">
        
         <div class="auser add-user">
-        
-            <form @submit.prevent="userSubmit">
-                <div class="form-group fg mt-3">
-                    <label for="#">Employee ID</label>
-                    <input type="text" class="employeeId form-control" required v-model="userData.employee_id" @keyup="findUser(userData.employee_id)"> 
-                    <p class="error pt-1" v-if="userData.employee_id.length > 1 && error">Employee ID not yet registered</p>
-                </div>
+            
+          
+            <form @submit.prevent="userSubmit()">
+                <div class="form-group row fg mt-3">
+                    <!-- <div class="col-md-6">
+                        <label for="#"><strong>ID Prefix</strong></label>    
+                        <select class="form-control" v-model="prefixId">
+                            <option value="">Select ID Prefix</option>
+                            <option value="rdfflfi">RDFFLFI</option>
+                            <option value="o+">O+</option>
+                        </select>                    
+                    </div> -->
+                    
+                    <div class="col-md-6">
+                        <label for="#"><strong>Employee ID</strong></label>
+                        <input type="text" @keypress.enter.prevent="apiSearch()" v-model="employeeId" class="form-control">                        
+                        <!-- <span>
+                            <p class="text-success text-alert">Employee Available</p>
+                        </span>
+                        <span>
+                            <p class="text-danger">ID # already registered </p>
+                        </span>
 
+                        <span>
+                            <p class="text-danger">ID #  Not Found</p>
+                        </span> -->
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="#"><strong>Username</strong></label>
+                        
+                        <input type="text" v-model="username" class="employeeId form-control mb-1"> 
+                        
+                    </div>
+                    
+
+                </div>
+                
                 <div class="form-group fg">
-                    <label for="#">Role</label>
-                    <select class="form-control" v-model="userData.role" required @change="onChange(userData.role)">
+                    <label for="#"><strong>Role</strong></label>
+                    <select class="form-control" v-model="role" @change="changeRole()">
                         <option value="">Select Role</option>
                         <option v-for="role in roles" :value="role.name" :key="role.id">
-                        {{ role.name }}
+                            {{ role.name }}
                         </option>
                     </select>
                 </div>
-
-                <span  v-if="userData.role" class="grid-check">
-                    
-                    <p><strong>{{ userData.role }} Privilege</strong></p>
-                     <br>
-                    
-                    <div class="form-check" v-for="prm in permissions" :key="prm.id">
-                        <span v-for="cp in checkedPermissions" :key="cp">
-                            <input type="checkbox" :id="`rt${prm.id}`" checked v-if="cp == prm.name" name="permi" @change.once="onUnMark(prm.name)" class="permissions_cb" @click="resetDocType()">
-                        </span>
-                            
-                        <span v-for="ucp in uncheckedPermissions" :key="ucp">
-                            <input type="checkbox" v-if="ucp == prm.name" name="permi" :value="prm.name" :id="`rt${prm.id}`" @change.once="onMark(prm.name)" class="permissions_cb">
-                        </span>
-
-                        <span v-if="uncheckedPermissions.length != 0 || checkedPermissions.length != 0">
-                            &nbsp; <label :for="`rt${prm.id}`" class="permissions_cb">{{ prm.name }}</label>
-                        </span>
-                    </div>     
-                </span>
-
-                <span v-if="userData.role && result.length != 0 && checkedPermissions.length != 0 && !taggingRequest">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
-                </span>
-
-                <span v-else-if="taggingRequest && !showPrm && prmCategory.length == 0 && userData.docType.length != 0 && !showCb">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
-                </span>
-
-                <span v-else-if="taggingRequest && showCb && contractorCategory.length != 0 && userData.docType.length != 0 && showPrm && prmCategory.length !=0">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
-                </span>
-
-                <span v-else-if="taggingRequest && showPrm && prmCategory.length != 0 && !showCb && contractorCategory.length == 0">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
-                </span>
-
-                <span v-else-if="taggingRequest && !showPrm && prmCategory.length == 0 && showCb && contractorCategory != 0">
-                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
-                </span>
-
                 
-            
-                <span v-else>    
-                    <button type="submit" class="btn btn-sm btn-primary mt-4 btn-disabled" disabled>Sign Up</button>
+               <span>
+                <transition tag="div" name="priv" appear class="fg" v-if="role != '' && role != 'Administrator'">
+                 
+                    <div id="grid-priv">
+                        
+                        
+                            <div class="header mb-2">
+                                <p><strong>Privilege</strong></p>
+                            </div>
+                        
+                        
+                        
+                        <transition-group name="privilege-animate" appear class="mt-2 privilege">
+                            <span v-for="pn in permissions" :key="pn.id" :class="`pn${pn.id}`">
+                                <input type="checkbox" class="document_cb mr-2" :value="pn.name" v-model="privilege" :id="`pn${pn.id}`" @change="checkPermission()">
+                                <label :for="`pn${pn.id}`">{{ pn.name }}</label> 
+                            </span>
+                        </transition-group>
+
+                    </div>
+                </transition>
                 </span>
+                
+               
+
+                <span v-if="btnSubmit && role != ''">
+                    <button type="submit" class="btn btn-sm btn-primary mt-4">Sign Up</button>
+                </span>
+
+                <span v-else> 
+                    <button type="submit" class="btn btn-sm btn-primary mt-4 ml-1 disable text-dark" disabled>Sign Up</button>
+                </span>
+            
+
+
                 <router-link :to="{name: 'Users'}">
-                    <button class="btn btn-sm btn-default mt-4 ml-1" title="Back to User Masterlist"><span class="material-icons">east</span></button>
+                    <button class="btn btn-sm btn-default mt-4 ml-1" title="Back to User Masterlist">Cancel</button>
                 </router-link>
+                 
                 <div class="form-group">
                 </div>
             </form>
-           
         </div>
-       
+                   
+
+
+
         <div class="grid-header">
             
-            <div class="auser user-info" v-for="res in result" :key="res.id">
-                <div class="col-md-12 mt-3 row">                  
-                    <div class="col-md-12">
-                        <h3>
-                            <span id="lastname">{{ `${res.lastname}` }}</span>, 
-                            <span id="firstname">{{ `${res.firstname}` }}</span>{{ " " }}
-                            <span> {{ res.middlename[0].toUpperCase()}}</span>.
-                            <input type="hidden" id="middlename" :value="res.middlename">
+            <div class="auser user-info" v-if="result">
+                <div class="col-md-12 mt-3 row">                   
+                    <transition tag="div" class="col-md-12" name="header-info" appear mode="out-in">
+                        <h3 class="children">
+                            <span id="last_name">{{ result.last_name.toUpperCase() }}</span>, 
+                            <span id="first_name">{{ result.first_name.toUpperCase() }}</span>{{ " "}}
+                            <span> {{ result.middle_name[0].toUpperCase() }}</span>.
                         </h3>
-                    </div>
+                    </transition>
 
-                    <div class="col-md-12 auser-address">
-                    <p><strong>Employee ID : </strong>{{ res.id_number }}</p>
-                    <br>
-                    <p><strong>Department : </strong><span id="department">{{ res.department }}</span></p>
-                    <br>
-                    <p><strong>Username : </strong><span id="username">{{ `${res.firstname.charAt(0).toLowerCase()}${res.lastname.toLowerCase()}-${res.id_number}`  }}</span></p>
-                    <hr>
                     
-                        <span v-for="cp in checkedPermissions" :key="cp.id">
-                            <span v-if="cp =='Tagging of Request'">
-                                <p class=""><strong>Document Type</strong><em> (For Tagging of Documents)</em></p>
-                                
-                                <div class="mt-3">
-                                    <div class="row">
-                                        <div class="col-md-4" v-for="type in documentTypes" :key="type.id">
-                                            <input type="checkbox" name="" :id="`tor${type.id}`" class="doctype_cb" :value="type.name" v-model="userData.docType" @change="torChange(type.name)">
-                                            <label :for="`tor${type.id}`"  class="doctype_cb">&nbsp; {{ type.name }}</label>
-                                        </div>
-                                    </div>  
+                    <div class="col-md-12 auser-address">
+                        <transition  tag="span" name="headersub" appear mode="out-in">
+                            <span>
+                                <p><strong>ID Prefix : </strong>{{ result.prefix_id }}</p>
+                                <br>
+                                <p><strong>Employee ID : </strong>{{ result.id_number }}</p>
+                                <br>
+                                <p><strong>Department : </strong>{{ result.department }}</p>
+                                <br>
+                        
+                                <p><strong>Position : </strong>{{ result.position }}</p>
+                                <br>
+                                <hr>
+                            </span>
+                        </transition>
+
+                                           
+                       
+                        <span v-if="taggingOfRequest">
+                            <transition-group  tag="span" name="header-info" appear mode="out-in" class="row">
+                                <div class="col-md-12 mb-3 childr-1">
+                                    <p><strong>Document Types</strong> <em>(For Tagging of Request)</em> </p>
                                 </div>
-                            </span>
+                                
+                                
+                                <div :class="`col-lg-6 col-md-6 dt${dt.id}`" v-for="dt in documents" :key="dt.id">
+                                    <input type="checkbox" :id="`dt${dt.document_id}`" @change="checkDocumentType(dt.document_id, dt.document_type)">&nbsp;
+                                    <label :for="`dt${dt.document_id}`">{{ dt.document_type }}</label>
+                                </div>      
+                            </transition-group>
+
+                            <transition-group tag="div" name="card-animate" appear mode="out-in" id="category-box">
+                                
+                                
+                                    <div v-for="st in selectionTagging" :key="st.id" :class="`st${st.id}`">
+                                        <div class="mt-3 header-cat">
+                                            <p class="col-md-12 header-cat-text hc"><strong>{{ st.name }} Category <br></strong></p>
+
+
+
+                                            <div>
+                                                <span v-for="category in categories" :key="category.id">  
+                                                    <span v-for="(cat, index) in st.categories" :key="index">
+                                                        
+                                                        <span v-if="cat == category.id" class="row mod-row">  
+                                                            <span class="ml-4">                         
+                                                                <input type="checkbox" :id="`${category.id}${st.id}`" @change="selectCategory(st.id, category.id, category.name)"> &nbsp;
+                                                                <label :for="`${category.id}${st.id}`">{{ category.name }}</label>  
+                                                            </span>  
+                                                        </span>
+                                                    </span>                                                   
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                    </div>
+                                
+                            </transition-group>
+
+                    
                         </span>
-                        
-                        <!-- SHOW PRM CATEGORY -->
-                        <span v-if="showPrm">
-                            <hr>
-                            <span v-for="cp in checkedPermissions" :key="cp.id">
-                                <span v-if="cp =='Tagging of Request'">
-                                    <p class=""><strong>PRM Category</strong></p>
-
-                                    <div class="mt-3">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="checkbox" id="checkAll" @change="checkAll()" class="doctype_cb">
-                                                <label  class="doctype_cb" for="checkAll"> &nbsp; <strong> Check All</strong></label>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-md-6" v-for="sPrm in prm" :key="sPrm.id">
-                                                <input type="checkbox" class="doctype_cb" :id="`prm${sPrm.id}`" :class="{selectedPrm: sPrm.name!='confidential request'}" :value="sPrm.name" @change="confidentialRequest(sPrm.name)" v-model="prmCategory">
-                                                <label :for="`prm${sPrm.id}`" class="doctype_cb"> &nbsp; {{ sPrm.name }}</label>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                </span>
-                            </span>
-                            
-                        </span>
-
-                        
-
-
-
-                        <!-- SHOW CONTRACTORS BILL CATEGORY -->
-                        <span v-if="showCb">
-                            <hr>
-                            <span v-for="cp in checkedPermissions" :key="cp.id">
-                                <span v-if="cp =='Tagging of Request'">
-                                    <p class=""><strong>Contractor's Billing Category</strong></p>
-
-                                    <div class="mt-3">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="checkbox" id="checkAllContractor" @change="checkAllContractor()" class="doctype_cb">
-                                                <label  class="doctype_cb" for="checkAllContractor"> &nbsp; <strong> Check All</strong></label>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-md-6" v-for="sCb in contractor" :key="sCb.id">
-                                                <input type="checkbox" class="doctype_cb" :id="`cb${sCb.id}`" :value="sCb.name" @change="unCheckAll()" v-model="contractorCategory">
-                                                <label :for="`cb${sCb.id}`" class="doctype_cb"> &nbsp; {{ sCb.name }}</label>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                </span>
-                            </span>
-                        </span>
-                        
                     </div>
                 </div>
             </div>
@@ -186,9 +193,13 @@
     </div>
 
     </div>
+    
   </div>
+
+ 
   
 </template>
+
 
 
 
@@ -201,9 +212,10 @@ import DataTable from '../../components/shared-components/DataTable'
 import Modal from '../../components/shared-components/Modal'
 import Loading from '../../components/shared-components/Loading'
 
-import {mapState} from 'vuex'
+import {createLogger, mapState} from 'vuex'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import {gsap} from 'gsap'
 
 
 
@@ -211,42 +223,27 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
         return {
-            userData: {
-                employee_id: '',
-                role: '',
-                permissions: [],
-                docType: [],
-                category: [],
-                username: '',
-                lastname: '',
-                firstname: '',
-                middlename: '',
-                department: '',
-
-            },
-            result: [],           
-            error: false,
-            defaultPermissions: [],
-            checkedPermissions: [],
-            uncheckedPermissions: [],
-            prmCategory: [],
-            contractorCategory: [],
-            showPrm: false,
-            showCb: false,
-            taggingRequest: false,
-            isCheckAll: false,
-            isCheckAllContractor: false,
-            confidentialAccess: false,
-           
-        }
+            employeeId: '',
+            prefixId: '',
+            result:null,
+            role: '',
+            privilege: [],
+            btnSubmit: false,
+            taggingOfRequest: false,
+            selectionTagging: [],
+            categories: null,
+            selectedCategory: [],
+            documentHolder: [],
+            categoryHolder: [],
+            holder2: [],
+            isDone: true
+            
+        }       
     },
-    created(){
-        
+    created(){ 
         this.$store.dispatch('loadPermissions')
-        this.$store.dispatch('loadPrmCategory')
-        this.$store.dispatch('loadContractorsCategory')
-        this.$store.dispatch('loadDocType')
-        
+        this.$store.dispatch('loadDocuments')   
+        this.fetchCategories()
         
     },
     computed:{
@@ -254,246 +251,217 @@ export default {
             'api',
             'permissions',
             'roles',
-            'documentTypes',
-            'prm',
-            'contractor',
+            'documents'
             
         ])
         
     },
     methods:{
-        unCheckAll(){
-            $('#checkAllContractor').prop('checked', false)
-            this.isCheckAllContractor = false
-        },
-
-        confidentialRequest(cr){
-            if(cr == "confidential request"){
-                this.confidentialAccess = !this.confidentialAccess
-            }else{
-                $('#checkAll').prop('checked', false)
-                this.isCheckAll =  false
-            
-            }
-        },
-
-        checkAllContractor(){
-            this.contractorCategory = [] 
-            this.isCheckAllContractor = !this.isCheckAllContractor
-            
-            if(this.isCheckAllContractor){ 
-                // Check all 
-                for (var key in this.contractor) {   
-                    this.contractorCategory.push(this.contractor[key].name);          
-                } 
-            } 
-        },
-
-        checkAll(){ 
-            this.isCheckAll = !this.isCheckAll; 
-            this.prmCategory = []; 
-            if(this.isCheckAll){ 
-                // Check all 
-                for (var key in this.prm) {   
-                    if(this.prm[key].name != "confidential request"){
-                        this.prmCategory.push(this.prm[key].name); 
-                    }
-                                  
-                } 
-            }         
-        },
-
-
-        torChange(val){
-            if(val == 'PRM'){
-                this.showPrm = !this.showPrm
-                this.prmCategory = []
-                this.isCheckAll = false;
-
-                    
-
-
-                
-                
-            }else if(val == "Contractor's Billing"){
-                this.showCb = !this.showCb
-                this.contractorCategory = []
-                this.isCheckAllContractor = false;
-                
-            }
-        },
-        resetDocType(){
-            for(let i=0; i<this.checkedPermissions.length; i++){
-                var arr = this.checkedPermissions
-                var index = arr.indexOf("Tagging of Request")
-                if(index > -1){
-                    this.userData.docType = []
-                }
-            }
-        },
-        async findUser(eid){
-            
-            this.error = false;
-            axios.get(`/api?id_number=${eid}`).then((res)=>{
-               this.result = res.data
-               
-               if(this.result.length){
-                   this.error = false
-                    setTimeout(()=>{
-                        this.userData.lastname = $("#lastname").text()
-                        this.userData.firstname = $("#firstname").text()
-                        this.userData.middlename = $("#middlename").val()
-                        this.userData.username = $("#username").text()
-                        this.userData.department = $("#department").text()
-                    },2000)
-               }else{   
-                   this.error =true;
-               }
-            })
-        },
-        onChange(da){
-
-            
-            this.uncheckedPermissions = [];
-            this.checkedPermissions = [];
-            this.defaultPermissions = []
-            this.checkedPermissions = []
-            this.uncheckedPermissions = []
-            this.prmCategory = []
-            this.contractorCategory = []
-            this.userData.docType = []
-            this.showPrm = false
-            this.showCb = false
-
-           
-
-            if(da != ''){
-
-                if(da==='Requestor' || da==='AP Tagging'){
-                    this.taggingRequest = true;
-                }else{
-                    this.taggingRequest = false;
-                }
-                
-                for(let i=0; i<this.permissions.length-1; i++){
-                   
-                    if(this.roles[i].name === da){
-                        let userPer = this.roles[i].def_perm
-                        userPer.forEach((data)=>{
-                            this.checkedPermissions.push(data);
-                            
-                            for(let j=0; j<this.checkedPermissions.length; j++){
-                                this.permissions.forEach(opp=>{
-                                    if(userPer[j] !== opp.name){
-                                    
-                                        if(!this.uncheckedPermissions.includes(opp.name)){
-                                            this.uncheckedPermissions.push(opp.name);
-                                        }
-                                    }
-                                })
-
-                            }
-                            
-                        })
-                        break;
-                    }
-                }
-                for(let i=0; i<this.checkedPermissions.length; i++){
-                    var arr = this.uncheckedPermissions
-                    var index = arr.indexOf(this.checkedPermissions[i])
-                    if(index > -1){
-                        arr.splice(index, 1);
-                    }
-                }
-                
-            
-
-
-            }
-        },
-
-
-        onMark(val){
-
-            if(val === 'Tagging of Request'){
-                this.taggingRequest = true;
-                
-            }
-            this.checkedPermissions.push(val)
-
-            for(let i=0; i<this.checkedPermissions.length; i++){
-                var arr = this.uncheckedPermissions
-                var index = arr.indexOf(this.checkedPermissions[i])
-
-                if(index > -1){
-                    arr.splice(index, 1);
-                }
-            }
-
-        },
-
-        onUnMark(val){
-
-            if(val === 'Tagging of Request'){
-                this.taggingRequest = false;
-                
-            }
-
-           
-            if(val ===  "Tagging of Request"){
-                this.prmCategory = []
-                this.contractorCategory = []
-                this.showPrm = false
-                this.showCb = false
-
-            }
-
-            this.uncheckedPermissions.push(val)
-
-            for(let i=0; i<this.uncheckedPermissions.length; i++){
-                var arr = this.checkedPermissions
-                var index = arr.indexOf(this.uncheckedPermissions[i])
-
-                if(index > -1){
-                    arr.splice(index, 1);
-                }
-            }            
-        },
-
         userSubmit(){
+            
+
+            
+
+
 
             Swal.fire({
-                title: 'Do you want to save this data?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Save`,
-                denyButtonText: `Don't save`,
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('Saved!', '', 'success')
-                    axios.post('/users', 
-                    {
-                        "user_id": this.userData.employee_id,
-                        "username": this.userData.username,
-                        "lastname": this.userData.lastname,
-                        "middlename": this.userData.middlename,
-                        "firstname": this.userData.firstname,
-                        "role": this.userData.role,
-                        "document_type": this.userData.docType,
-                        "permissions": this.checkedPermissions,
-                        "prm_categories": this.prmCategory,
-                        "contractor_categories": this.contractorCategory,
-                        "password": this.userData.username,
-                        "department": this.userData.department,
+                    title: 'Do you want to save data?',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: `Save`,
+                    denyButtonText: `Don't save`,
+                    }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        this.isDone = false
+                        axios.post(`/users`, {
+                            id_prefix: "RDFFLFI",
+                            id_no: this.result.id_number,
+                            role: this.role,
+                            first_name: this.result.first_name,
+                            middle_name: this.result.middle_name,
+                            last_name: this.result.last_name,
+                            suffix: null,
+                            department: this.result.department,
+                            position: this.result.position,
+                            permissions: this.privilege,
+                            document_types: this.selectionTagging,
+                            username: this.username.toLowerCase(),
+                            password: this.username.toLowerCase(),
+                            password_confirmation: this.username.toLowerCase(),
+                            is_active: 1
+                        }).then(()=>{
+                            this.isDone = true
+                            Swal.fire('Saved!', '', 'success')
+                            this.$route.push({name: 'Users'})
+                        }).catch(err=>{
+                            let msg = err.response.data.errors
+                            this.isDone = true
+                            console.log(msg)
+                            Swal.fire(msg.error_message[0], 'Data not Saved', 'warning')
+                        })
+                        
+                    } else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
                     }
-                    ).then(()=>{
+                })
+
+        },
+        finalValidation(){
+            setTimeout(()=>{
+                if(this.documentHolder.length != 0 && this.taggingOfRequest){
+                    let arr = this.categoryHolder
+                    for(let i=0; i<this.documentHolder.length; i++){
+                        let index = arr.indexOf(this.documentHolder[i])
+                        if(index == -1){
+                            this.btnSubmit = false
+                            break
+                        }else{
+                            this.btnSubmit = true
+                        }
+                    }
+                }
+            }, 1000)
+        },
+        selectCategory(document, category, category_name){
+
+            let concatenate = category.toString() + document.toString()
+            if($(`input[id=${concatenate}]:checked`).length > 0){
+                this.selectedCategory.push({document_id: document, category_id:category})
+                this.categoryHolder.push(document)
+                this.finalValidation()
                 
-                        setTimeout(()=>{
-                            this.$router.push({name: 'Users'})
-                        }, 2000)
+            }else{
+                if(this.selectedCategory.length != 0){
+                    this.selectedCategory.forEach((sc, index)=>{
+                        if(document == sc.document_id && category == sc.category_id){
+                            this.selectedCategory.splice(index, 1)
+                        }
                     })
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
+
+                    this.categoryHolder.forEach((sc, index)=>{
+                        if(document == sc){
+                            this.categoryHolder.splice(index, 1)
+                        }
+                    })
+                    this.finalValidation()
+
+
+                }
+            }
+        },
+        checkDocumentType(did, doctype){
+            setTimeout(()=>{
+                if($(`input[id=dt${did}]:checked`).length > 0){
+                    axios.get(`/documents/${did}`).then(res=>{
+                        let result = res.data[0]
+                        if(result.categories[0] != null){
+                            this.btnSubmit = false
+                            this.selectionTagging.push({id: did, name: doctype, categories: result.categories})
+                            this.documentHolder.push(did)
+                        }else{
+                            this.selectedCategory.push({document_id: did, category_id: 0 })
+
+                            for(let i=0; i<this.selectedCategory.length; i++){
+                                if(this.selectedCategory[i].category_id > 0){
+                                    this.btnSubmit = false
+                                }else{
+                                    this.btnSubmit = true
+                                }
+                            }
+                            
+                        }
+                    })
+                }else{
+
+                    for(let i=0; i<this.selectedCategory.length; i++){
+                        if(this.selectedCategory[i].category_id > 0){
+                            this.btnSubmit = false
+                        }else{
+                            this.btnSubmit = true
+                        }
+                    }
+                    axios.get(`/documents/${did}`).then(res=>{
+                        let result = res.data[0]
+                        
+                        if(result.categories[0] != null){
+                            this.selectionTagging.forEach((st, index) =>{
+                                if(st.id == did){
+                                    this.selectionTagging.splice(index, 1)
+                                }
+                            })
+
+                            this.documentHolder.forEach((sc, index)=>{
+                                if(did == sc){
+                                    this.documentHolder.splice(index, 1)
+                                }
+                            })
+                        }else{
+                            if(this.selectedCategory.length != 0){
+                                this.selectedCategory.forEach((sc, index)=>{
+                                    if(did == sc.document_id && sc.category_id == 0){
+                                        this.selectedCategory.splice(index, 1)
+                                    }
+                                })
+                            }
+                        }
+                    })    
+                }
+
+            }, 500)
+
+            
+        },
+        checkPermission(){
+            this.selectedCategory = []
+            this.selectionTagging = []
+            this.taggingOfRequest = false
+
+            setTimeout(()=>{
+                if($('input[value="Tagging of Request"]:checked').length > 0){
+                    this.btnSubmit = false
+                    this.taggingOfRequest = true
+                }else{
+                    this.taggingOfRequest = false
+                    this.btnSubmit = true
+                }
+
+                if(this.privilege.length == 0){
+                    this.btnSubmit = false
+                }
+            }, 500)
+            
+        },
+        changeRole(){
+            this.checkPermission()
+            this.roles.forEach(role=>{ 
+                if(role.name==this.role){
+                    this.privilege = role.permissions
+                }
+            })
+        },
+        fetchCategories(){
+            axios.get('/categories?is_active=active').then(res=>{
+                let holder = res.data
+                this.categories = holder.data
+                console.log(this.categories)
+            })
+        },
+        apiSearch(){
+            this.selectionTagging = []
+            this.selectedCategory = []
+            this.result = null
+            axios.get(`http://localhost:3000/api?id_number=${this.employeeId}&id_prefix=${this.prefixId}`).then(res=>{
+                this.result = res.data[0]
+                console.log(this.result)
+                if(res.data.length != 0){
+                    this.username = this.result.first_name[0].toLowerCase() + this.result.last_name.toLowerCase()
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: '404',
+                        text: 'User not Found',
+                    })
                 }
             })
         }
@@ -503,76 +471,84 @@ export default {
 </script>
 
 
-
 <style scoped>
+    @import 'style/add-user-styles.css';
 
-.permissions_cb, .doctype_cb{
-    cursor:pointer;
-}
-
-.btn-disabled{
-    cursor: not-allowed;
-}
-
-.employee-list{
-    min-width:500px !important;
-}
+    .grid-parent{
+        display:grid;
+        grid-template-columns: repeat(2, 1fr);
+        border:2px solid green;
+        box-sizing:border-box;
+    }
 
 
+   .grid-child{
+       
+       padding-left:10px;
+       box-sizing:border-box;
+   }
+ 
+    .card-animate-leave-to{
+        opacity:0;
+        transform: translateX(-50px);
+    }
 
-p{
-    display:inline;
-    text-transform:uppercase;
-    color:rgb(97, 97, 97);
-}
+    .card-animate-enter-active{
+        transition:all .5s ease;
+    }
 
-span.username{
-    text-transform:lowercase;
-}
-
-.grid-check{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr)
-}
+    .card-animate-leave-active{
+        transition:all .5s ease;
+    }
 
 
-.auser form{
-    min-width:80%;
-}
-.add-user{
-    display:flex;
-    justify-content:center;
-}
-.form-group *{
-    width:100%;
-}
-
-.form-group input{
-    width:100%;
-}
-
-.grid-container{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:10px;
-    position:relative;   
-}
-
-.user-info{
-    grid-column:2/4;
-    overflow:auto;
-}
-
-.auser:nth-child(1){
-    border-right:1px solid rgb(228, 227, 227);
-}
-
-.auser{
     
-    height:calc(100vh - 80px);
-    padding:10px;
-    box-sizing:border-box;
+    .privilege-animate-enter-from{
+        opacity:0;
+        transform: translateX(-50px);
+    }
 
-}
+    .privilege-animate-leave-to{
+        opacity:0;
+        transform: translateX(-50px);
+    }
+
+    .privilege-animate-enter-active{
+        transition:all 1s ease;
+    }
+
+    .privilege-animate-leave-active{
+        transition:all 1s ease;
+    }
+    .alert-text span{
+        display:inline;
+    }
+    .hc{
+        
+        display:block;
+    }
+    .header-cat{
+
+        display:block;
+        
+        width:100%;
+        background:rgb(245, 245, 245);
+        margin-bottom:5px;
     
+        
+    }
+
+    .header-cat-text{
+        color:white;
+        background:#172B4D;
+    }
+
+    #grid-priv{
+        display:grid;
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .header{
+        grid-column:1/3;
+    }
 </style>

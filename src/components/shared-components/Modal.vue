@@ -4,14 +4,16 @@
     
       <!-- Modal content-->
       <div class="modal-content">
+
         <div class="modal-header">
             <slot name="modal-header" class="header-text"></slot> 
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           
         </div>
-
         <div class="modal-body">
+          
           <form>
+
             <slot name="modal-body">
               
             </slot>
@@ -40,9 +42,9 @@ export default {
 }
   .modal-dialog{
     min-width:40%;
-    min-height:500px;
+    min-height:00px;
   }
   form{
-    min-height:700px;
+    min-height:300px;
   }
 </style>
