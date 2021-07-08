@@ -97,7 +97,6 @@
                 <button class="btn btn-sm btn-warning ml-1" @click="companyArchive(company.id)">Archive</button>
             </td> 
         
-    
 
         </tr>
         </template>

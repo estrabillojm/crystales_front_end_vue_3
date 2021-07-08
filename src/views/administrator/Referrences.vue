@@ -26,7 +26,7 @@
 
                         <div class="form-group row">
                             <div class="col-md-3 pr-0" v-if="!updateMode">
-                                <span v-if="userInput.type.length < 5 || userInput.description.length < 3">
+                                <span v-if="userInput.type.length < 2 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Save</button>
                                 </span>
                                 <span v-else>
@@ -35,7 +35,7 @@
                             </div>
 
                             <div class="col-md-3 pr-0" v-else>
-                                <span v-if="userInput.type.length < 5 || userInput.description.length < 3">
+                                <span v-if="userInput.type.length < 2 || userInput.description.length < 3">
                                     <button type="submit" class="btn btn-sm btn-success disable text-black" disabled>Update</button>
                                 </span>
                                 <span v-else>
@@ -118,16 +118,16 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
-           updateMode: false,
-           refs: [],
-           referenceid: null,
-           userInput: {
+            updateMode: false,
+            refs: [],
+            referenceid: null,
+            userInput: {
                type: '',
                description: '',
                active: true
-           },
-           isDone: true,
-           query: ''
+            },
+            isDone: true,
+            query: ''
        }
     },
     created(){

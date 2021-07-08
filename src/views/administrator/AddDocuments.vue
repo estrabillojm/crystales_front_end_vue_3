@@ -139,6 +139,11 @@ export default {
                         this.isDone = true
                         Swal.fire('Saved!', '', 'success')
                         this.$router.push({name: 'Documents'})
+                    }).catch(err=>{
+                        let msg = err.response.data.errors
+                        this.isDone = true
+                        Swal.fire(msg.document_type[0], 'Data not Saved', 'warning')
+                        
                     })
                 } else if (result.isDenied) {
                     Swal.fire('Changes are not saved', '', 'info')

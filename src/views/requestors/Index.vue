@@ -6,6 +6,45 @@
     <div class="main-container">
       <Navbar/>
 
+      <DataTable>
+
+        <template v-slot:tb-extra-btn>
+          
+            <router-link :to="{name: 'NewRequest'}">
+          
+              <button class="btn btn-success mb-1" type="button">New Request</button>
+            </router-link>
+        </template>
+
+        <template v-slot:tb-btn-tab>
+          
+                    
+        </template>
+
+        <template v-slot:tb-search>
+          <input type="text" @keyup.enter="searchData()" v-model="query" placeholder="Search">
+        </template>
+        <template v-slot:tb-header>
+          <th>Date Requested</th>
+          <th>Transaction No.</th>
+          <th>Document</th>
+          <th>Company</th>
+          <th>Supplier</th>
+          <th>PO Amount</th>
+          <th>Ref Amount</th>
+          <th>Amount</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th class="text-center">Action</th>
+        </template>
+        
+        <template v-slot:tb-data>
+
+          
+          
+        </template>
+      </DataTable>
+
       
     </div>
   </div>
@@ -21,13 +60,16 @@ import {mapState} from 'vuex'
 
 export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
+    data(){
+      return {
+        query: ''
+      }
+    },
     created(){
-        this.$store.dispatch('loadPosts')
+       
     },
     computed:{
-        ...mapState([
-            'posts'
-        ]),
+        
         
     },
     methods:{

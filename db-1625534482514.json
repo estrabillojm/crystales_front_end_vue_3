@@ -1,13 +1,7 @@
 {
-  "user_transaction_document":[
-    
-  ],
-  "transaction_supplier": [
-
-  ],
-  "users": [
-    
-  ],
+  "user_transaction_document": [],
+  "transaction_supplier": [],
+  "users": [],
   "documents": [
     {
       "document_type": "prm",

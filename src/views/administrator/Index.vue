@@ -221,7 +221,9 @@ export default {
           name: '',
           categories: []
         },
-        catIdHolder: null
+        catIdHolder: null,
+        query: '',
+        
       }
     },
     created(){

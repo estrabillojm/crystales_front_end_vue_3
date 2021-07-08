@@ -36,14 +36,14 @@ export default {
 
 <style scoped>
 
-.modal-body{
+/* .modal-body{
   display:flex;
   justify-content:center;
 }
   .modal-dialog{
     min-width:40%;
     min-height:00px;
-  }
+  } */
   form{
     min-height:300px;
   }

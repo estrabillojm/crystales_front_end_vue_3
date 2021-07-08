@@ -18,11 +18,13 @@
           <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
             alt="User picture">
         </div>
+
+        
         <div class="user-info">
-          <span class="user-name">Jhon
-            <strong>Smith</strong>
+          <span class="user-name"> {{ result.first_name }}
+            <strong>{{ result.last_name }}</strong>
           </span>
-          <span class="user-role">Role Description</span>
+          <span class="user-role">{{role}}</span>
           <span class="user-status">
             <i class="fa fa-circle"></i>
             <span>Online</span>
@@ -109,7 +111,7 @@
             <a href="#">
               <i class="material-icons">description</i>
               <span>Document</span>
-              <span class="badge badge-pill badge-warning">New</span>
+              
             </a>
 
             <div class="sidebar-submenu">
@@ -135,7 +137,7 @@
             <a href="#">
               <i class="material-icons">payments</i>
               <span>Cheque</span>
-              <span class="badge badge-pill badge-danger">3</span>
+            
             </a>
             <div class="sidebar-submenu">
               <ul>
@@ -268,17 +270,55 @@
 <script>
 import axios from 'axios'
 export default {
+  data(){
+    return{
+      role: '',
+      userId: null,
+      result: []
+    }
+  },
+
+  created(){
+    this.checkCookie()
+    if(!this.userId){
+      this.$router.push('/')
+    }
+  },
   methods:{
+    getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      },
+      checkCookie() {
+        
+          let role = this.getCookie("role");
+          this.role = role
+
+          let id = this.getCookie("id");
+          this.userId = id
+          
+            axios.get(`/users/${this.userId}`).then(res=>{
+              this.result = res.data
+            })
+      },
     logOut(){
       axios.post('/logout').then(res=>{
         console.log("Successfully Sign Out")
       })
     }
   },
-  created(){
-
   
-  },
   mounted(){
 
     $(document).ready(function(){
@@ -321,7 +361,7 @@ export default {
 
 
 
-  .side-logo{
+  /* .side-logo{
     animation: opac 3s infinite both linear;
 }
 
@@ -334,5 +374,5 @@ export default {
     100%{ opacity: .4; }
 
     
-}
+} */
 </style>

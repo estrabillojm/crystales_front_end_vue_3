@@ -35,6 +35,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group row">
                             
                             <div class="col-lg-1 pr-0">
@@ -114,7 +115,11 @@ export default {
         },
         findDocument(){
             axios.get(`/documents/${this.$route.params.id}`).then(res=>{   
-                this.data = res.data[0]     
+                this.data = res.data[0]  
+                
+                if(this.data.categories[0] == null){
+                    this.data.categories = []
+                }
             })
         },
         updateDocument(){
@@ -127,6 +132,7 @@ export default {
                 }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
+                    console.log(this.data)
                     Swal.fire('Updated!', '', 'success')
                     axios.put(`/documents/${this.$route.params.id}`, this.data).then(res=>{
                         this.$router.push({name: 'Documents'})   
