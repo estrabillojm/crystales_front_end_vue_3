@@ -1,102 +1,61 @@
 {
-  "user_transaction_document":[
-    
-  ],
-  "transaction_supplier": [
-
-  ],
-  "users": [
-    
-  ],
-  "documents": [
+  "transaction": [
     {
-      "document_type": "prm",
-      "document_description": "prm description",
-      "categories": [
-        1,
-        4,
-        7,
-        10,
-        13,
-        16,
-        17,
-        14,
-        11,
-        8,
-        5,
-        2,
-        3,
-        6,
-        9,
-        12,
-        15
-      ],
-      "id": 1
-    },
-    {
+      "users_id": 2,
+      "id_no": "10196",
+      "first_name": "Uname",
+      "middle_name": "MNAME",
+      "last_name": "Lname",
+      "suffix": null,
+      "department": "MIS",
+      "date_requested": "07/15/2021",
+      "transaction_id": "Dummy ID",
+      "document_id": 4,
       "document_type": "contractor's billing",
-      "document_description": "contractor's billing description",
-      "categories": [
-        21,
-        19,
-        18,
-        16,
-        3
+      "category_id": 20,
+      "category": "retention",
+      "document_no": "498654",
+      "document_amount": "2,500,000",
+      "document_date": "2021-07-06",
+      "company_id": 4,
+      "company": "10003-corporate service",
+      "supplier_id": 13,
+      "supplier": "Troy's Machinery",
+      "po_group": [
+        {
+          "po_no": "456",
+          "rr_group": [],
+          "po_amount": "2,500,000",
+          "unit_price": null,
+          "po_qty": "120"
+        }
       ],
-      "id": 2
-    },
-    {
-      "document_type": "pad",
-      "document_description": "pad description",
-      "categories": [],
-      "id": 3
-    },
-    {
-      "document_type": "receipt",
-      "document_description": "receipt description\n",
-      "categories": [
-        1,
-        4,
-        2,
-        5,
-        17,
-        18,
-        15
+      "po_total_amount": "2,500,000",
+      "po_total_qty": 0,
+      "rr_total_qty": 23085.79,
+      "referrence_group": [
+        {
+          "referrence_type": "pr",
+          "referrence_no": "498645",
+          "referrence_amount": "1,175,500",
+          "referrence_qty": null
+        }
       ],
-      "id": 4
-    },
-    {
-      "document_type": "utitlities",
-      "document_description": "utilities description",
-      "categories": [
-        1
-      ],
-      "id": 5
-    },
-    {
-      "document_type": "payroll",
-      "document_description": "payroll description",
-      "categories": [],
-      "id": 6
-    },
-    {
-      "document_type": "pcf",
-      "document_description": "pcf description",
-      "categories": [],
-      "id": 7
-    },
-    {
-      "document_type": "new document type",
-      "document_description": "dfsasdfa",
-      "categories": [
-        1,
-        4,
-        5,
-        8,
-        11,
-        12
-      ],
-      "id": 8
+      "referrence_total_amount": "1,175,500",
+      "referrence_total_qty": "0",
+      "payment_type": "partial",
+      "status": "received by AP tagging",
+      "remarks": null,
+      "total_balance": "1,324,500",
+      "pcf_letter": null,
+      "pcf_date": null,
+      "date_from": null,
+      "date_to": null,
+      "description": null,
+      "reason_id": null,
+      "reason": null,
+      "reason_remarks": null,
+      "id": 1
     }
   ],
   "api": [

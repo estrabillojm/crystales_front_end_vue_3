@@ -35,6 +35,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <slot name="tb-no-data">
+                                    
+                                </slot>
+                            </tr>
                             <slot name="tb-data">
                                 
                             </slot>

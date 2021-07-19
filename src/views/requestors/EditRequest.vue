@@ -14,24 +14,12 @@
             <div class="row pt-2 pl-4 pr-4"> 
                 <div class="col-lg-4 p-1" v-if="shiftBox != 4">
                   <div class="col-lg-12 px-5 my-card">
-
-                    <div class="row" v-if="amountError">
-                          <div class="col-lg-12">
-                            <div class="form-group">
-                              <div class="alert alert-danger">
-                                <p>{{ amountError }}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      
-
                         <div class="row">
                           <div class="col-lg-12">
                             <div class="form-group">
                               <label for="">Select Transaction Type</label>
                               <select class="form-control"  v-model="documentType" @change="changeDocumentType()">
-                              
+                                
                                 <option v-for="document in documents" :key="document.document_id" :data-id="document.id" :value="document.document_id" @change="alertMe()">{{document.document_type.toUpperCase()}}</option>
                               </select>
                             </div>
@@ -45,7 +33,7 @@
                           <div class="form-group">
                             <label for="">Payment Type</label>
                             <select class="form-control" v-model="paymentType">
-                             
+                              
                               <option v-if="documentType != 4" value="full">FULL</option>
                               <option value="partial" v-if="documentType != 7">PARTIAL</option>
                             </select>
@@ -59,6 +47,7 @@
                             <div class="form-group">
                               <label for="">Category</label>
                               <select class="form-control" v-model="documentCategory">
+                                
                               
                                 <option v-for="category in cat" :key="category.index" :value="category.id">{{category.name.toUpperCase()}}</option>
                               </select>
@@ -90,7 +79,7 @@
                             <div class="form-group">
                               <label for="">Company</label>
                               <select class="form-control" v-model="documentCompany">
-                          
+                                
                                 <option v-for="company in companies" :key="company.id" :value="company.id">{{ company.company_code}} - {{ company.company_description.toUpperCase() }}</option>
                               </select>
                             </div>
@@ -109,17 +98,26 @@
                               <input type="text" class="form-control" v-model="documentNumber">
                             </div>
                           </div>
+
+                          <!-- <VueSelect
+                          v-model="model"
+                          :options="[1,2,3,4,5]"
+                          close-on-select
+                          :min="1"
+                        ></VueSelect>
+                        <pre>{{ model || 'null' }}</pre> -->
+
+
                           
                           <div class="col-lg-12" v-if="documentType == 7 || documentType == 2 || documentType == 4 || documentType == 5 || documentType == 9 || documentType == 6 || documentType == 8">
                             <div class="form-group">
                               <label for="">Supplier</label>
-                              <select class="form-control" v-model="documentSupplier">
-                 
+                              <select class="form-control" id="search" v-model="documentSupplier"> 
                                 <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">{{ supplier.supplier_name.toUpperCase() }}</option>
                               </select>
+                          
                             </div>
                           </div>
-
                         </div>
 
 
@@ -164,7 +162,7 @@
                           <div class="col-lg-5">
                             <div class="form-group">
                               
-                              <button role="button" class="btn" @click.prevent="backBtn()">Back</button>
+                                <button class="btn" @click.prevent="backBtn()">Back</button>
                               
                             </div>
                           </div>
@@ -208,7 +206,7 @@
 
                           <div class="col-lg-4 offset-lg-8 p-0">
                             <div class="form-group">
-                              <button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target=".bd-example-modal-xl" @click="changeBox(1)" v-if="supplierType != 'dr'">Add P.O</button>
+                              <button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target=".bd-example-modal-xl" @click="changeBox(1)">Add P.O</button>
                             </div>
                           </div>
                           <div class="col-lg-12 my-card-2 m-0" v-if="po_group.length == 0">
@@ -293,7 +291,7 @@
                             <div class="form-group">
                               <label for="">Type</label>
                               <select class="form-control" v-model="supplierType" id="refType" @change="changeSupplierType()">
-                         
+                                <option value=""></option>
                                 <option v-for="(ref, index) in references" :key="index" :value="ref.referrence_type.toLowerCase()">{{ ref.referrence_type.toUpperCase() }}</option>
                               </select>
                             
@@ -313,18 +311,18 @@
                             </div>
                           </div>
                           
-                          <div class="col-lg-12 px-1 mt-0" v-if="supplierType=='dr'">
+                          <div class="col-lg-4 px-1 mt-0" v-if="supplierType=='dr'">
                             <div class="form-group">
                                 <label for="">Quantity</label>
                                 <input type="text" class="form-control" id="refQty" v-model="refQty" @keydown.enter.prevent="preventSubmit()" @keyup.enter="submitRef()" @keyup="addCommaRefQty()">
                             </div>
                           </div>
-                          <!-- <div class="col-lg-8 px-1 mt-0" v-if="supplierType=='dr'">
+                          <div class="col-lg-8 px-1 mt-0" v-if="supplierType=='dr'">
                             <div class="form-group">
                                 <label for="">Unit Price</label>
                                 <input type="text" class="form-control" id="refQty" v-model="refQty" @keydown.enter.prevent="preventSubmit()" @keyup.enter="submitRef()" @keyup="addCommaRefQty()">
                             </div>
-                          </div> -->
+                          </div>
                           
 
                           <div class="col-lg-12 alert alert-info m-0 mb-2" v-if="refList.length != 0">
@@ -393,16 +391,20 @@
                           <input type="number" class="form-control" id="poNumber" v-model="poNumber" @keydown.enter.prevent="preventSubmit()" @keyup.enter="moveFocus(1)">
                         </div>
 
-                        <div class="col-lg-2 p-1" v-if="documentType != 7 && supplierType != 'dr'">
+                        <div class="col-lg-2 p-1" v-if="documentType != 7">
                           <label for="#">PO Quantity</label>
                           <input type="text" class="form-control" id="poQuantity" @keyup="addCommaQty()" v-model="poQuantity" @keydown.enter.prevent="preventSubmit()" @keyup.enter="moveFocus(2)">
                         </div>
 
-                        <div class="col-lg-3 p-1">
+                        <div class="col-lg-3 p-1" v-if="supplierType != 'dr'">
                           <span>
                             <label for="#">PO Amount</label>
                             <input type="text" class="form-control" id="poAmount"  v-model="poAmount" @keyup="addComma()" @keydown.enter.prevent="preventSubmit()" @keyup.enter="moveFocus(3)">
                           </span>
+                          <!-- <span v-else-if="supplierType == 'dr'">
+                            <label for="#">Unit Price</label>
+                            <input type="text" class="form-control" id="unitPrice" @keyup="addCommaPrice()" v-model="unitPrice" @keydown.enter.prevent="preventSubmit()" @keyup.enter="moveFocus(3)">
+                          </span> -->
                         </div>
                         <div class="col-lg-2 p-1" v-if="documentType != 7">
                           <label for="#">RR #</label>
@@ -411,13 +413,6 @@
                         <div class="col-lg-2 p-1" v-if="documentType != 7">
                           <label for="#">RR Quantity</label>
                           <input type="number" class="form-control" id="rrQuantity" v-model="rrQuantity" @keydown.enter.prevent="submitRR()">
-                        </div>
-                        <div class="col-lg-3 p-1">
-                      
-                          <span v-if="supplierType == 'dr'">
-                            <label for="#">Unit Price</label>
-                            <input type="text" class="form-control" id="unitPrice" @keyup="addCommaPrice()" v-model="unitPrice" @keydown.enter.prevent="preventSubmit()" @keyup.enter="moveFocus(3)">
-                          </span>
                         </div>
                       </div>
                       <div class="row">
@@ -721,7 +716,7 @@
                     <hr>
                     <div class="row">
                       <div class="col-lg-2 offset-lg-8 pr-1">
-                        <button class="btn btn-success btn-block border" @click.prevent="formSubmit()">Submit</button>
+                        <button class="btn btn-success btn-block border" @click.prevent="formSubmit()">Update</button>
                       </div>
                       <div class="col-lg-2 pl-1">
                         <button @click="hideBalance(0)" class="btn btn-block border">Back</button>
@@ -752,11 +747,19 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import {gsap} from 'gsap'
 import moment from 'moment'
+// import VueSelect from 'vue-next-select'
+// import 'vue-next-select/dist/index.min.css'
+
+
+
+
+
 
 export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
       return{
+       
         isDone: true,
         documents: [],
         companies: [],
@@ -788,7 +791,7 @@ export default {
         poQuantity: null,
         editMode: false,
         batchIndex: null,
-        unitPrice: null,
+        // unitPrice: null,
         rrHolder: [],
         refQty: null,
         total: {
@@ -828,12 +831,13 @@ export default {
 
         dateError: false,
         pcfDateConvert: null,
-        timestamp: null,
+        cat: [],
+        totalBalance: null,
+        dateRequested: null,
 
-        totalDr: [],
 
 
-        amountError: '',
+  
 
         
         
@@ -847,38 +851,11 @@ export default {
       this.fetchSuppliers()
       this.fetchReferences()
       this.checkCookie()
-      this.getNow()
-      // this.autoValue()
-      
+      this.fetchRequest()
     },
     
     methods:{
-      totalDocAmount(){
-        let total = 0
-        this.totalDr.forEach(val=>{
-          total += parseFloat(val.replace(/,/g, ''))
-        })
-        let holder = total.toString()
-        this.documentAmount = holder.replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-
-        console.log(this.documentAmount)
-
-      },
-      calculate(){
-        
-        let total = 0
-        this.receipts.forEach(sum=>{
-          total += parseFloat(sum.rr_qty)
-        })
-        total = total * this.unitPrice.replace(/,/g, '')
-        let holder = total.toString()
-        this.documentAmount = holder.replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-        
-
-      },
-
+      
       backBtn(){
       
         if(this.documentType){
@@ -899,16 +876,70 @@ export default {
         }
 
       },
-      getNow() {
-          let today = moment().toDate()
-          this.timestamp = moment(today).format('MM/DD/YYYY')  
+      fetchRequest(){
+    
+        let id = this.$route.params.id
+        axios.get(`http://localhost:3000/transaction/${id}`).then(res=>{
+          let holder = res.data
+          this.documentType = holder.document_id
+          this.documentTypeInfo = holder.document_type
+          this.paymentType = holder.payment_type
+          this.documentCategory = holder.category_id
+          this.categoryInfo = holder.category
+          this.documentCompany = holder.company_id
+          this.documentSupplier = holder.supplier_id
+          this.supplierInfo = holder.supplier
+          this.dateRequested = holder.date_requested
+          this.documentNumber = holder.document_no
+          this.documentDate = holder.document_date
+          this.documentAmount = holder.document_amount
+          this.documentRemarks = holder.remarks
+          this.dateFrom = holder.date_from
+          this.dateTo = holder.date_to
+          this.pcfDate = holder.pcf_date
+          this.pcfLetter = holder.pcf_letter
+          this.po_group = holder.po_group
+          this.totalQty = holder.po_total_qty
+          this.totalAmount = holder.po_total_amount
+          this.refList = holder.referrence_group
+          this.totalRefQuantity = holder.referrence_total_qty
+          this.totalRefAmount = holder.referrence_total_amount
+          this.totalBalanceOne = holder.total_balance
+
+          
+
+
+        
+          setTimeout(()=>{
+            axios.get(`/documents/${holder.document_id}`).then(res=>{
+              let result = res.data[0]
+              if(result.categories[0] == null){
+              this.withCategories = false
+            }else{
+              this.withCategories = true
+              this.categories = result.categories
+              axios.get(`/categories`).then(res=>{
+                let cat = res.data
+                let final = cat.data
+                final.forEach((category, index)=>{
+                  result.categories.forEach(cat=>{
+                    if(category.id == cat){
+                      this.cat.push(category)
+                    }
+                  })
+                })
+              })
+            }
+              
+            })
+          },200)
+
+        })
+
+        
       },
       
       formSubmit(){
-
-      this.po_group.sort((a, b)=>{
-        return a.po_no - b.po_no
-      })
         let data = {
           "users_id": this.result.id,
           "id_prefix": this.result.prefix,
@@ -918,7 +949,7 @@ export default {
           "last_name": this.result.last_name,
           "suffix": this.result.suffix,
           "department": this.result.department,
-          "date_requested": this.timestamp,
+          "date_requested": this.dateRequested,
           "transaction_id": 'Dummy ID',
           "document_id": this.documentType,
           "document_type": this.documentTypeInfo,
@@ -942,35 +973,41 @@ export default {
           "status": "Pending",
           "remarks": this.documentRemarks,
 
-          "total_balance": this.totalBalanceOne,
+          "total_balance": this.totalBalance,
           "pcf_letter": this.pcfLetter,
           "pcf_date":this.pcfDate,
           "date_from": this.dateFrom,
-          "date_to": this.dateTo,
-          "description": null,
-          "reason_id": null,
-          "reason": null,
-          "reason_remarks": null,
+          "date_to": this.dateTo
         }
 
+        let id = this.$route.params.id
+
         Swal.fire({
-          title: 'Do you want to save data?',
+          title: 'Do you want to update data?',
           showDenyButton: true,
           showCancelButton: true,
-          confirmButtonText: `Save`,
-          denyButtonText: `Don't save`,
+          confirmButtonText: `Update`,
+          denyButtonText: `Don't Update`,
           }).then((result) => {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
               this.isDone = false
-              axios.post(`http://localhost:3000/transaction`, data).then(res=>{
+              axios.put(`http://localhost:3000/transaction/${id}`, data).then(res=>{
                 this.$router.push({name: 'RequestTagging'})
-                // console.log("DATA SAVED SUCCESSFULLY",data)
-              })   
+                console.log("Data Updated", data)
+              })
+                
           } else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
           }
       })
+        
+
+       
+        
+        
+    
+       
       },
       
       resetTransaction(){
@@ -1068,7 +1105,7 @@ export default {
       submitRef(){
         if(this.supplierType == 'dr'){
           if(this.refNumber){
-            if(this.refQty){
+            if(this.refAmount || this.refQty){
               this.refList.unshift({
                 referrence_type: this.supplierType,
                 referrence_no: this.refNumber,
@@ -1077,12 +1114,6 @@ export default {
               })
               this.clearRef()
               this.refAdded()
-        
-              this.supplierType = 'dr'
-              this.shiftBox = 1
-
-
-
             }else{
               document.getElementById("refQty").focus()
             }
@@ -1141,7 +1172,7 @@ export default {
       clearFields(){
         this.poNumber = null
         this.poAmount = null
-        this.unitPrice = null
+        // this.unitPrice = null
         this.poQuantity = null
         this.receipts = []
         this.rrQuantity = null
@@ -1168,7 +1199,7 @@ export default {
             this.po_group.unshift({
               po_no: this.poNumber,
               po_amount: this.poAmount,
-              unit_price: this.unitPrice,
+              // unit_price: this.unitPrice,
               po_qty: this.poQuantity,
               rr_group: this.rrHolder.rr_group,
             })
@@ -1195,7 +1226,7 @@ export default {
       this.poNumber  = this.rrHolder.po_no
       this.poAmount = this.rrHolder.po_amount
       this.poQuantity = this.rrHolder.po_qty
-      this.unitPrice = this.rrHolder.unit_price
+      // this.unitPrice = this.rrHolder.unit_price
 
       },
       deletePO(index){
@@ -1259,7 +1290,7 @@ export default {
                     po_no: this.poNumber,
                     rr_group: this.receipts,
                     po_amount: this.poAmount,
-                    unit_price: this.unitPrice,
+                    // unit_price: this.unitPrice,
                     po_qty: this.poQuantity,
                   })
                   
@@ -1268,31 +1299,13 @@ export default {
                     po_no: this.poNumber,
                     rr_group: this.rrHolder.rr_group,
                     po_amount: this.poAmount,
-                    unit_price: this.unitPrice,
+                    // unit_price: this.unitPrice,
                     po_qty: this.poQuantity,
                   })
                 }
-                
-                if(this.supplierType == 'dr'){
-                  
-                  this.calculate()
-                  this.totalDr.push(this.documentAmount)
-                  this.totalDocAmount()
-                  this.supplierType = null
-                }
-                
-
-                
-             
-                
-                
-                
-                
-
                 Swal.fire('Saved!', '', 'success')
                 this.shiftBox = 0
-                // this.supplierType = ''
-
+                this.supplierType = ''
                 this.clearFields()
                 // setTimeout(()=>{
                 //   try {
@@ -1325,11 +1338,8 @@ export default {
            
             document.getElementById("poAmount").focus();
           }else{
-            if(this.supplierType == 'dr'){
-              document.getElementById("poAmount").focus();
-            }else{
-              document.getElementById("poQuantity").focus();
-            }
+          
+            document.getElementById("poQuantity").focus();
           }
         }else if(num == 2){
           try {
@@ -1430,13 +1440,13 @@ export default {
 
         this.poQuantity = result
       },
-      addCommaPrice(){
-        const result = this.unitPrice
-        .replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      // addCommaPrice(){
+      //   const result = this.unitPrice
+      //   .replace(/[^0-9a-zA-Z.]/g, "")
+      //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        this.unitPrice = result
-      },
+      //   this.unitPrice = result
+      // },
       addCommaRef(){
         const result = this.refAmount
         .replace(/[^0-9a-zA-Z.]/g, "")
@@ -1458,7 +1468,6 @@ export default {
       changeDocumentType(){
         this.categories = []
         this.cat = []
-        this.totalDr = []
         let holder = this.documentType
         if(this.documentType){
           this.isClear += 1
@@ -1477,7 +1486,6 @@ export default {
               axios.get(`/categories`).then(res=>{
                 let cat = res.data
                 let final = cat.data
-                // console.log(final)
                 final.forEach((category, index)=>{
                   result.categories.forEach(cat=>{
                     if(category.id == cat){
@@ -1504,7 +1512,7 @@ export default {
         }).catch(err=>{
            let msg = err.response.data.errors
             this.isDone = true
-            Swal.fire(msg.referrence_type[0], 'Data not Updated', 'warning')
+            Swal.fire(msg.referrence_type[0], msg.referrence_type[0], 'warning')
         })
       },
       fetchDocuments(){
@@ -1515,7 +1523,7 @@ export default {
         }).catch(err=>{
            let msg = err.response.data.errors
             this.isDone = true
-            Swal.fire(msg.referrence_type[0], 'Data not Updated', 'warning')
+            Swal.fire(msg.referrence_type[0], msg.referrence_type[0], 'warning')
         })
       },
       fetchCompanies(){
@@ -1528,7 +1536,7 @@ export default {
         }).catch(err=>{
            let msg = err.response.data.errors
             this.isDone = true
-            Swal.fire(msg.referrence_type[0], 'Data not Updated', 'warning')
+            Swal.fire(msg.referrence_type[0],  msg.referrence_type[0], 'warning')
         })
       },
       fetchSuppliers(){
@@ -1541,7 +1549,7 @@ export default {
         }).catch(err=>{
            let msg = err.response.data.errors
             this.isDone = true
-            Swal.fire('', 'Data not Updated', 'warning')
+            Swal.fire('', 'Internal Server Error', 'warning')
         })
       },
       getCookie(cname) {
@@ -1577,6 +1585,7 @@ export default {
 
     },
     watch:{
+
       async documentCategory(){
         let output
         // console.log(this.documentCategory)
@@ -1638,6 +1647,7 @@ export default {
       }
     },
     computed:{
+
       totalBalanceOne(){
         let holder
         if(this.documentAmount && this.totalAmount && this.totalRefAmount){
@@ -1647,9 +1657,6 @@ export default {
 
           if(this.documentType == 2 && this.paymentType == 'full'){ //PRM
             let total = parseFloat(documentAmount) - parseFloat(totalAmount)
-            holder = total.toString()
-          }else if(this.documentType == 2 && this.paymentType == 'partial'){
-            let total = parseFloat(totalAmount) - parseFloat(documentAmount)
             holder = total.toString()
           }
         }
@@ -1684,7 +1691,6 @@ export default {
           if(this.documentType == 5 && this.paymentType == 'full'){ //RECEIPT FULL
             let total = parseFloat(totalAmount) - parseFloat(totalRefAmount)
             holder = total.toString()
-            // console.log('HOLDER', holder)
           }
         }
 
@@ -1697,16 +1703,13 @@ export default {
           }
         }
 
-        
-
-
-    
-
 
         if(this.documentType){
           const result = holder.replace(/[^0-9a-zA-Z.]/g, "")
           .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           holder = result
+
+          this.totalBalance = holder
         }
 
         
@@ -1716,6 +1719,84 @@ export default {
         
         
       },
+      totalRefQuantity(){
+        this.totalRef.qty = 0
+        this.refList.forEach(total=>{
+          if(total.referrence_qty){
+            let removed = total.referrence_qty.replace(/,/g, '');
+            this.totalRef.qty += parseFloat(removed)
+          } 
+        })
+
+        let holder = this.totalRef.qty.toString()
+        
+        const result = holder
+        .replace(/[^0-9a-zA-Z.]/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        holder = result
+
+        return holder
+      },
+      totalRefAmount(){
+        this.totalRef.amount = 0
+        this.refList.forEach(total=>{
+          if(total.referrence_amount){
+            let removed = total.referrence_amount.replace(/,/g, '');
+            this.totalRef.amount += parseFloat(removed)
+          }
+        })
+
+        let holder = this.totalRef.amount.toString()
+        
+        const result = holder
+        .replace(/[^0-9a-zA-Z.]/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        holder = result
+
+        return holder
+      },
+      totalQty(){
+        if(this.documentType != 7){
+          this.total.qty = 0
+          this.po_group.forEach(total=>{
+            let removed = total.po_qty.replace(/,/g, '')
+            this.total.qty += parseFloat(removed)
+          })
+          let holder = this.total.qty.toString()
+          
+          const result = holder
+          .replace(/[^0-9a-zA-Z.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+          holder = result
+
+          return holder
+        }
+        
+      },
+      totalAmount(){
+        this.total.amt = 0
+        this.po_group.forEach(total=>{
+          if(total.po_amount){
+            let removed = total.po_amount.replace(/,/g, '')
+            this.total.amt += parseFloat(removed)
+          } 
+        })
+        let holder = this.total.amt.toString()
+        
+        const result = holder
+        .replace(/[^0-9a-zA-Z.]/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        holder = result
+
+        return holder
+        
+      },
+    
+      
       emptyFieldValidation(){
 
         if(this.documentType == 7){ // PAD
@@ -1816,28 +1897,27 @@ export default {
             // PRM FULL
             if(this.paymentType == 'full'){
               
-              if((parseFloat(docAmount) == parseFloat(totalPoAmount) && parseFloat(totalRefAmount) <= parseFloat(totalPoAmount) && this.documentAmount && totalPoAmount)){
-                this.amountError = ''
+              if((parseFloat(docAmount) <= parseFloat(totalPoAmount) && parseFloat(totalRefAmount) <= parseFloat(totalPoAmount) && this.documentAmount && totalPoAmount)){
+                // if(totalRefAmount){
+                //   if(parseFloat(totalRefAmount) == parseFloat(docAmount)){
+                //     return true
+                //   }else{
+                //     return false
+                //   }
+                // }else{
+                //   return false
+                // }
                 return true
-                
-                
               }else if(this.emptyFieldValidation && this.totalAmount == 0){
-                this.amountError = ''
                 return true
-                
-              }else{
-                this.amountError = "Document Amount must be equal than PO Amount"
               }
 
 
             }
             // PRM PARTIAL
             else{
-              if(parseFloat(docAmount) < parseFloat(totalPoAmount) && parseFloat(docAmount) && parseFloat(totalPoAmount)){
-                this.amountError = ''
-                return true
-              }else if(parseFloat(docAmount) > parseFloat(totalPoAmount) && parseFloat(docAmount) && parseFloat(totalPoAmount)){
-                this.amountError = "Document Amount must be lower than PO Amount"
+              if(parseFloat(docAmount) == parseFloat(totalPoAmount)/* && parseFloat(docAmount) > parseFloat(totalRefAmount) && parseFloat(totalRefAmount)*/){
+              return true
               }
             }
           }
@@ -1910,108 +1990,26 @@ export default {
 
 
       },
-      totalRefQuantity(){
-        this.totalRef.qty = 0
-        this.refList.forEach(total=>{
-          if(total.referrence_qty){
-            let removed = total.referrence_qty.replace(/,/g, '');
-            this.totalRef.qty += parseFloat(removed)
-          } 
-        })
+      
+      // totalUnitPrice(){
+      //   this.total.price = 0
+      //   this.po_group.forEach(total=>{
+      //     if(total.unit_price){
+      //       let removed = total.unit_price.replace(/,/g, '')
+      //       this.total.price += parseFloat(removed)
+      //     }
+      //   })
 
-        let holder = this.totalRef.qty.toString()
+      //   let holder = this.total.price.toString()
         
-        const result = holder
-        .replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      //   const result = holder
+      //   .replace(/[^0-9a-zA-Z.]/g, "")
+      //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        holder = result
+      //   holder = result
 
-        return holder
-      },
-      totalRefAmount(){
-        this.totalRef.amount = 0
-        this.refList.forEach(total=>{
-          if(total.referrence_amount){
-            let removed = total.referrence_amount.replace(/,/g, '');
-            this.totalRef.amount += parseFloat(removed)
-          }
-        })
-
-        let holder = this.totalRef.amount.toString()
-        
-        const result = holder
-        .replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        holder = result
-
-        return holder
-      },
-      totalQty(){
-        let holder
-
-        if(this.documentType != 7 && this.supplierType != 'dr' && this.poQuantity){
-          
-          this.total.qty = 0
-          this.po_group.forEach(total=>{
-            let removed = total.po_qty.replace(/,/g, '')
-            this.total.qty += parseFloat(removed)
-          })
-          holder = this.total.qty.toString()
-          
-          const result = holder
-          .replace(/[^0-9a-zA-Z.]/g, "")
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-          holder = result
-          return holder
-        }
-
-        return 0
-
-        
-
-        
-      },
-      totalAmount(){
-        this.total.amt = 0
-        this.po_group.forEach(total=>{
-          if(total.po_amount){
-            let removed = total.po_amount.replace(/,/g, '')
-            this.total.amt += parseFloat(removed)
-          } 
-        })
-        let holder = this.total.amt.toString()
-        
-        const result = holder
-        .replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        holder = result
-
-        return holder
-        
-      },
-      totalUnitPrice(){
-        this.total.price = 0
-        this.po_group.forEach(total=>{
-          if(total.unit_price){
-            let removed = total.unit_price.replace(/,/g, '')
-            this.total.price += parseFloat(removed)
-          }
-        })
-
-        let holder = this.total.price.toString()
-        
-        const result = holder
-        .replace(/[^0-9a-zA-Z.]/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        holder = result
-
-        return holder
-      }
+      //   return holder
+      // }
     },
 }
     
@@ -2020,6 +2018,7 @@ export default {
 
 
 <style scoped>
+
 .haveValue{
   background:rgb(228, 228, 228) !important;
 }

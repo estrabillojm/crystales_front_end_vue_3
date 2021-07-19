@@ -119,16 +119,35 @@
                 <li>
                   <router-link :to="{ name: 'RequestTagging'}">Tagging of Request</router-link>
                 </li>
-                
+
                 <li>
-                  <a href="#">Identify</a>
-                </li>
-                <li>
-                  <a href="#">Received Receipt Report</a>
+                  <router-link :to="{ name: 'IdentifyTransaction'}">Identify</router-link>
                 </li>
 
                 <li>
-                  <a href="#">EditedTag Approval</a>
+                  <router-link :to="{ name: 'DistributeTransaction'}">Distribute</router-link>
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'ReceivedReceiptReport'}">Received Receipt Report</router-link>
+                </li>
+
+
+                
+  
+                
+
+                <li>
+                  <router-link :to="{ name: 'Tagging'}">Tagging of Documents</router-link>
+                </li>
+
+                <li>
+                  <router-link :to="{ name: 'EditedTag'}">Approve Edited Tag</router-link>
+                </li>
+
+
+                <li>
+                  <router-link :to="{ name: 'CounterReceipt'}">Counter Receipt</router-link>
                 </li>
               </ul>
             </div>
@@ -142,18 +161,19 @@
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="#">
-                    Releasing of Cheque
-                  </a>
+                  <router-link :to="{ name: 'ReleasingOfCheque'}">Releasing of Cheque</router-link>
                 </li>
+
                 <li>
-                  <a href="#">
-                    Creation of Cheque
-                  </a>
+                  <router-link :to="{ name: 'CreationOfCheque'}">Creation of Cheque</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Clearing of Cheque</a>
+                  <router-link :to="{ name: 'ClearingOfCheque'}">Clearing of Cheque</router-link>
                 </li>
+
+                
+             
               </ul>
             </div>
           </li>
@@ -165,11 +185,13 @@
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="#">Tagged Reports</a>
+                  <router-link :to="{ name: 'TaggedReports'}">Tagged Reports</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Cheque Reports</a>
+                  <router-link :to="{ name: 'ChequeReports'}">Cheque Reports</router-link>
                 </li>
+            
               </ul>
             </div>
           </li>
@@ -180,18 +202,24 @@
             </a>
             <div class="sidebar-submenu">
               <ul>
+
                 <li>
-                  <a href="#">Matching of Voucher</a>
+                  <router-link :to="{ name: 'MatchingOfVoucher'}">Matching of Voucher</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Creation of Voucher</a>
+                  <router-link :to="{ name: 'CreationOfVoucher'}">Creation of Voucher</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Checking of Voucher</a>
+                  <router-link :to="{ name: 'CheckingOfVoucher'}">Checking of Voucher</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Approving of Voucher</a>
+                  <router-link :to="{ name: 'ApprovingOfVoucher'}">Approving of Voucher</router-link>
                 </li>
+
+             
               </ul>
             </div>
           </li>
@@ -205,18 +233,24 @@
             </a>
             <div class="sidebar-submenu">
               <ul>
+
                 <li>
-                  <a href="#">Tagging and Vouchering</a>
+                  <router-link :to="{ name: 'TaggingAndVouchering'}">Tagging and Vouchering</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Releasing</a>
+                  <router-link :to="{ name: 'Releasing'}">Releasing</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Approval</a>
+                  <router-link :to="{ name: 'Approval'}">Approval</router-link>
                 </li>
+
                 <li>
-                  <a href="#">Activity Logs</a>
+                  <router-link :to="{ name: 'ActivityLogs'}">Activity Logs</router-link>
                 </li>
+
+                
               </ul>
             </div>
           </li>
@@ -232,10 +266,7 @@
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="#">Transaction Approval</a>
-                </li>
-                <li>
-                  <a href="#">Open street map</a>
+                  <router-link :to="{ name: 'TransactionApproval'}">Transaction Approval</router-link>
                 </li>
               </ul>
             </div>
@@ -246,18 +277,7 @@
     </div>
     <!-- sidebar-content  -->
     <div class="sidebar-footer">
-      <a href="#">
-        <i class="fa fa-bell"></i>
-        <span class="badge badge-pill badge-warning notification">3</span>
-      </a>
-      <a href="#">
-        <i class="fa fa-envelope"></i>
-        <span class="badge badge-pill badge-success notification">7</span>
-      </a>
-      <a href="#">
-        <i class="fa fa-cog"></i>
-        <span class="badge-sonar"></span>
-      </a>
+      
       <a href="#" @click="logOut">
         <i class="fa fa-power-off"></i>
       </a>

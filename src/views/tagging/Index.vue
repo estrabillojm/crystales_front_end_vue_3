@@ -6,22 +6,22 @@
     <div class="main-container">
       <Navbar/>
 
-      <DataTable v-if="myRequest.length != 0">
+      <DataTable>
 
         <template v-slot:tb-extra-btn>
           
-            <router-link :to="{name: 'NewRequest'}">
+            <!-- <router-link :to="{name: 'NewRequest'}">
           
               <button class="btn btn-success mb-1" type="button">New Request</button>
-            </router-link>
+            </router-link> -->
         </template>
 
         <template v-slot:tb-btn-tab>
-            <div class="btn-group" role="group">
-              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 1, 'active-nav': isActive == 1}" @click="filterStatus(1)">Requested</button>
-              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 2, 'active-nav': isActive == 2}" @click="filterStatus(2)">Hold</button>
-              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 3, 'active-nav': isActive == 3}" @click="filterStatus(3)">Rejected</button>
-
+            <div class="btn-group mb-1" role="group">
+              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 1, 'active-nav': isActive == 1}" @click="filterStatus(1, 'received')">Requested</button>
+              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 2, 'active-nav': isActive == 2}" @click="filterStatus(2, 'tagged by AP tagging')">Tagged</button>
+              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 3, 'active-nav': isActive == 3}" @click="filterStatus(3, 'hold by AP tagging')">Hold</button>
+              <button type="button" :class="{'btn':true ,'btn-primary': isActive != 4, 'active-nav': isActive == 4}" @click="filterStatus(4, 'rejected by AP tagging')">Rejected</button>
 
               <!-- <div class="btn-group setMaxWidth" role="group">
                 <button id="btnGroupDrop1" type="button" class="btn btn-block btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -48,7 +48,6 @@
           <th>Ref Amount</th>
           <th>Amount</th>
           <th>Payment</th>
-          <th>Status</th>
           <th class="text-center">Action</th>
         </template>
         
@@ -66,55 +65,32 @@
               <td v-if="request.document_amount">{{ request.document_amount }}</td>
               <td v-else><span class="material-icons gray-text">remove</span></td>
               <td>{{ request.payment_type }}</td>
-              <td>{{ request.status }}</td>
               <td class="text-center">
 
-                <router-link :to="{name: 'ViewTagging', params: {id: request.id }}">
-                  <span class="material-icons text-secondary btn-icon" title="Modify Request">
-                    find_in_page
+              
+              <router-link :to="{name: 'ViewTagging', params: {id: request.id }}">
+                  <span class="material-icons text-secondary btn-icon" title="View History">
+                    
+                      find_in_page
+                    
                   </span>
-                </router-link>
+              </router-link>
 
+              &nbsp;
 
-                &nbsp;
-
-
-                
-                <router-link :to="{name: 'EditRequest', params: {id: request.id }}" v-if="request.status == 'Pending'">
-                  <span class="material-icons text-warning btn-icon" title="Edit Request">
+              <button type="button" class="btn-success rcv-btn" @click="receiveDoc(request.transaction_id, request.id)" v-if="request.status.toLowerCase() =='pending'">Receive</button>
+              <router-link :to="{name: 'ViewTagging', params: {id: request.id }}" v-else>
+                  <span class="material-icons text-warning btn-icon" title="Modify Request">
                     mode_edit
                   </span>
-                </router-link>
-
-                <router-link :to="{name: 'ViewRequest', params: {id: request.id }}" v-else>
-                  <span class="material-icons text-warning btn-icon" title="View Request">
-                    visibility
-                  </span>
-                </router-link>
+              </router-link>
               </td>
             </tr>
         </template>
 
       </DataTable>
 
-      
-
-      <div class="content" v-else>
-      
-      <div class="cr-datatable">
-            <div class="cr-data-btn">
-                <ul class="request">
-                    <router-link :to="{name: 'NewRequest'}">
-                    <button class="btn btn-success mb-1" type="button">New Request</button>
-                  </router-link>
-                </ul>
-            </div>
-
-            <div class="col-lg-12 border bg-gray text-center">
-              <p class="text-white lead">No Data to Show</p>
-            </div>
-        </div>
-      </div>
+    
 
       
     </div>
@@ -129,6 +105,8 @@ import Modal from '../../components/shared-components/Modal'
 import Loading from '../../components/shared-components/Loading'
 import {mapState} from 'vuex'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+
 
 export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
@@ -142,29 +120,56 @@ export default {
     },
     created(){
        this.fetchMyRequest()
+       this.loadPendings()
     },
     computed:{
         
         
     },
     methods:{
-      filterStatus(id){
+      filterStatus(id, status){
         this.isActive = id
+        if(status=='received'){
+          axios.get(`http://localhost:3000/transaction?status=received`).then(res=>{
+            this.myRequest = res.data
+          })
+        }else{
+          axios.get(`http://localhost:3000/transaction?status=${status}`).then(res=>{
+            this.myRequest = res.data
+          })
+        }
+        
+      },
+      loadPendings(){
+        axios.get(`http://localhost:3000/transaction`).then(res=>{
+          this.myRequest = res.data
+        })
+      },
+      receiveDoc(transaction_id, id){
+         Swal.fire({
+            title: ` <h4>Do you want to receive Transaction Number: ${transaction_id}</h4>`,
+            showDenyButton: true,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: `Receive`,
+            }).then((result) => {
+            if (result.isConfirmed) {
+              axios.patch(`http://localhost:3000/transaction/${id}`, {
+                status: 'received by AP tagging'
+              }).then(()=>{
+                Swal.fire('Received!', '', 'success')
+                this.fetchMyRequest()
+              })
+            }
+        })
       },
       changeStatus(stat){
         this.paymentStatus = stat
-
       },
       fetchMyRequest(){
         axios.get('http://localhost:3000/transaction').then(res=>{
           this.myRequest = res.data
         })
-      },
-      getSinglePost(id){        
-         this.posts.filter(post => post.id = id)   
-      },
-      dataHover(){
-        
       }
     }
     
@@ -173,38 +178,7 @@ export default {
 
 <style scoped>
   @import '../../assets/css/dashboard-style.css';
-    .active-nav{
-    color:rgb(29, 29, 29);
-    background:rgb(145, 145, 255);
-    transition:all .2s ease-in;
-  }
-
-  .setMaxWidth{
-    min-width:200px;
-  }
-
-
-  .text-black{
-    color:rgb(36, 36, 36);
-    font-size:17px;
-  }
-  .bg-gray{
-    background:rgb(158, 158, 158);
-    padding:20px 5px;
-    border-radius:5px;
-    color:white;
-  }
-  .btn-icon{
-    cursor: pointer;
-  }
-
-  .requestors-request td{
-    text-transform:uppercase;
-  }
-
-  .gray-text{
-    color:rgb(133, 133, 133);
-  }
+  @import '../../assets/css/header-tab-style.css';
 
 
 </style>

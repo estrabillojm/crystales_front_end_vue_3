@@ -1,0 +1,37 @@
+
+  .active-nav{
+    color:rgb(29, 29, 29);
+    background:rgb(145, 145, 255);
+    transition:all .2s ease-in;
+  }
+
+  .rcv-btn{
+    padding:3px 6px;
+    outline:none;
+    border:none;
+    border-radius:3px;
+    cursor:pointer;
+  }
+
+  .btn-group .setMaxWidth{
+    min-width:600px;
+  }
+
+
+  .text-black{
+    color:rgb(36, 36, 36);
+    font-size:17px;
+  }
+  .bg-gray{
+    background:rgb(158, 158, 158);
+    padding:20px 5px;
+    border-radius:5px;
+    color:white;
+  }
+  .btn-icon{
+    cursor: pointer;
+  }
+
+  .requestors-request td{
+    text-transform:uppercase;
+  }

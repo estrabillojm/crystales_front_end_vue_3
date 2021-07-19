@@ -11,6 +11,11 @@
   font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
 }
 
+.text-no-show{
+  color:rgb(179, 179, 179);
+  font-size:17px;
+}
+
 input[type="checkbox"], label{
   cursor:pointer;
 }

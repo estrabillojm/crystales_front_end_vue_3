@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Requestors from '../views/requestors/Index'
-import NewRequest from '../views/requestors/NewRequest'
 
 
-
-
+// ADMINISTRATOR
 import Admin from '../views/administrator/Index'
 import AddUser from '../views/administrator/AddUser'
 import Suppliers from '../views/administrator/Suppliers'
@@ -22,7 +19,111 @@ import Referrences from '../views/administrator/Referrences'
 import NotFound from '../views/NotFound'
 
 
+
+// REQUESTOR
+import Requestors from '../views/requestors/Index'
+import NewRequest from '../views/requestors/NewRequest'
+import ViewRequest from '../views/requestors/ViewRequest'
+import EditRequest from '../views/requestors/EditRequest'
+
+
+// AP TAGGING
+import Tagging from '../views/tagging/Index'
+import ViewTagging from '../views/tagging/ViewTagging'
+import ReleasingOfCheque from '../views/tagging/ReleasingOfCheque'
+import TaggedReports from '../views/tagging/TaggedReports'
+import ChequeReports from '../views/tagging/ChequeReports'
+import CounterReceipt from '../views/tagging/CounterReceipt'
+
+
+// SUPERVISOR
+
+import EditedTag from '../views/supervisor/Index'
+import TaggingAndVouchering from '../views/supervisor/TaggingAndVouchering'
+import Releasing from '../views/supervisor/Releasing'
+
+
+// GAS
+import IdentifyTransaction from '../views/gas/Index'
+import MatchingOfVoucher from '../views/gas/MatchingOfVoucher'
+
+
+// FILING CLERK
+import DistributeTransaction from '../views/filingclerk/Index'
+
+
+// AP SPECIALIST
+import ReceivedReceiptReport from '../views/apspecialist/Index'
+import CheckingOfVoucher from '../views/apspecialist/CheckingOfVoucher'
+import ApprovingOfVoucher from '../views/apspecialist/ApprovingOfVoucher'
+
+
+// TREASURY
+import CreationOfCheque from '../views/treasury/CreationOfCheque'
+import ClearingOfCheque from '../views/treasury/ClearingOfCheque'
+
+
+// MANAGER
+import Approval from '../views/manager/Approval'
+import ActivityLogs from '../views/manager/ActivityLogs'
+import TransactionApproval from '../views/manager/TransactionApproval'
+
+
+
+// AP ASSOCIATE
+import CreationOfVoucher from '../views/apassociate/CreationOfVoucher'
+
 const routes = [
+
+
+  // AP ASSOCIATE
+  { path: '/approval',name: 'Approval', component: Approval}, 
+  { path: '/activity-logs',name: 'ActivityLogs', component: ActivityLogs}, 
+  { path: '/transaction-approval',name: 'TransactionApproval', component: TransactionApproval}, 
+
+
+  // AP ASSOCIATE
+  { path: '/creation-of-voucher',name: 'CreationOfVoucher', component: CreationOfVoucher}, 
+
+  //TREASURY
+  { path: '/creation-of-cheque',name: 'CreationOfCheque', component: CreationOfCheque}, 
+  { path: '/clearing-of-cheque',name: 'ClearingOfCheque', component: ClearingOfCheque}, 
+
+
+  // AP SPECIALIST
+  { path: '/receive-receipt-report',name: 'ReceivedReceiptReport', component: ReceivedReceiptReport}, 
+  { path: '/checking-of-voucher',name: 'CheckingOfVoucher', component: CheckingOfVoucher}, 
+  { path: '/approving-of-voucher',name: 'ApprovingOfVoucher', component: ApprovingOfVoucher}, 
+
+  // FILING CLERK
+  { path: '/distribute-transaction',name: 'DistributeTransaction', component: DistributeTransaction}, 
+
+
+  // GAS
+  { path: '/identify-transaction',name: 'IdentifyTransaction', component: IdentifyTransaction}, 
+  { path: '/matching-of-voucher',name: 'MatchingOfVoucher', component: MatchingOfVoucher}, 
+
+  // SUPERVISOR
+  { path: '/edited-tag',name: 'EditedTag', component: EditedTag}, 
+  { path: '/tagging-and-vouchering',name: 'TaggingAndVouchering', component: TaggingAndVouchering}, 
+  { path: '/releasing',name: 'Releasing', component: Releasing}, 
+
+  
+  // TAGGING
+  { path: '/document-tagging',name: 'Tagging', component: Tagging}, 
+  { path: '/view-tagging/:id', name: 'ViewTagging', component: ViewTagging},
+  { path: '/releasing-of-cheque/', name: 'ReleasingOfCheque', component: ReleasingOfCheque},
+  { path: '/tagged-reports/', name: 'TaggedReports', component: TaggedReports},
+  { path: '/cheque-reports/', name: 'ChequeReports', component: ChequeReports},
+  { path: '/counter-receipt/', name: 'CounterReceipt', component: CounterReceipt},
+
+
+
+  //REQUESTOR
+  { path: '/request-tagging',name: 'RequestTagging', component: Requestors}, 
+  { path: '/new-request',name: 'NewRequest', component: NewRequest}, 
+  { path: '/edit-request/:id',name: 'EditRequest', component: EditRequest}, 
+  {path: '/view-request/:id', name: 'ViewRequest', component: ViewRequest},
 
 
 
@@ -48,9 +149,9 @@ const routes = [
 
 
 
-  //REQUESTOR
-  { path: '/request-tagging',name: 'RequestTagging', component: Requestors}, 
-  { path: '/new-request',name: 'NewRequest', component: NewRequest}, 
+
+
+
 
 ]
 
