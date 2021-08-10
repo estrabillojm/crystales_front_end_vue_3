@@ -14,7 +14,7 @@
             </div>
             <div class="row">
          
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     <form @submit.prevent="supplierSave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Supplier Code</label>
@@ -103,6 +103,8 @@
                 
                
                 <div class="col-md-8 pt-1">
+
+        
         <DataTable>
 
         
@@ -137,10 +139,32 @@
             <td>{{ supplier.type }}</td>
             <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(supplier.id, supplier.supplier_code, supplier.supplier_name, supplier.terms, supplier.supplier_type_id)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="supplierArchive(supplier.id)">Archive</button>
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1"  @click="editMode(supplier.id, supplier.supplier_code, supplier.supplier_name, supplier.terms, supplier.supplier_type_id)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1" @click="supplierArchive(supplier.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
             </td> 
         </tr>
+        </template>
+
+
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link">Previous</button></li>
+                    <!-- <li class="page-item"><button class="page-link" @click="changePage(rootSupplier.prev_page_url, 1)">Previous</button></li> -->
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link">Next</button></li>
+                    <!-- <li class="page-item"><button class="page-link" @click="changePage(rootSupplier.next_page_url, 2)">Next</button></li> -->
+                </ul>
+            </nav>
         </template>
       </DataTable>
       
@@ -175,37 +199,56 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading, SmallLoader},
     data(){
        return {
-           query: '',
-           url: '/suppliers',
-           referrences: [],
-           updateMode: false,
-           suppliers: [],
-           companyid: null,
-           supplierTypes: null,
-           selectedRef:[],
-           selectedRefId:[],
-           userInput: {
-               supplier_code: '',
-               supplier_name: '',
-               terms: '',
-               supplier_type_id: '',
-               active: true,
-               referrence:[]
-           },
-           finalRef: [],
-           isDone: true,
-           smLoader:true
+            query: '',
+            url: '/suppliers',
+            referrences: [],
+            updateMode: false,
+            suppliers: [],
+            companyid: null,
+            supplierTypes: null,
+            selectedRef:[],
+            selectedRefId:[],
+            userInput: {
+                supplier_code: '',
+                supplier_name: '',
+                terms: '',
+                supplier_type_id: '',
+                active: true,
+                referrence:[]
+            },
+            finalRef: [],
+            isDone: true,
+            smLoader:true,
+            rootSupplier: [],
+            currentPage: 1,
        }
     },
     created(){
         this.fetchsuppliers()
         this.fetchSupplierType()
         this.fetchReferrence()
+        this.$store.dispatch('setHeaderTitle', null)
+
+    },
+    computed:{
+        ...mapState([
+            'pageResult'
+        ])
     },
     
     methods:{
+        async changePage(url, action){
+            // if(url != null){
+                // await this.$store.dispatch('changePage', [url, action])
+                // this.supplierTypes = this.pageResult.data.data
+                // this.rootSupplierType = this.pageResult.data
+                // this.currentPage = this.pageResult.data.current_page  
+            // }else{
+            //     await this.$store.dispatch('changePage', [url, action])
+            // }
+                 
+        },
         searchData(){
-           
             this.isDone = false
             axios.post(`/suppliers/search`, {
                 value: this.query.toLowerCase()

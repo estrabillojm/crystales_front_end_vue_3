@@ -14,7 +14,7 @@
                 <Loading class="loader"/>
             </div>
             <div class="row">
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     <form @submit.prevent="companySave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Company Code</label>
@@ -93,12 +93,31 @@
             <td>{{ company.company_description }}</td>
             <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" @click="updateMode(company.id, company.company_code, company.company_description)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="companyArchive(company.id)">Archive</button>
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1" @click="updateMode(company.id, company.company_code, company.company_description)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1" @click="companyArchive(company.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
             </td> 
         
 
         </tr>
+        </template>
+        <template v-slot:tb-paginate>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootCompany.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootCompany.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
         </template>
       </DataTable>
       
@@ -131,25 +150,52 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
-           query: '',
-           editId: null,
-           editMode: false,
-           editCompany: [],
-           companies: [],
-           companyid: 0,
-           userInput: {
-               code: '',
-               description: '',
-               active: true
-           },
-           isDone: true
+            query: '',
+            editId: null,
+            editMode: false,
+            editCompany: [],
+            companies: [],
+            companyid: 0,
+            userInput: {
+                code: '',
+                description: '',
+                active: true
+            },
+            isDone: true,
+            currentPage: 1,
+            query: null,
+            rootCompany: null
        }
+    },
+    computed:{
+        ...mapState([
+            'pageResult'
+        ])
     },
     created(){
         this.fetchCompanies()
+        this.$store.dispatch('setHeaderTitle', null)
+
     },
  
     methods:{
+        async changePage(url, action){
+            
+
+
+            if(url != null){
+                await this.$store.dispatch('changePage', [url, action])
+                this.companies = this.pageResult.data.data
+                this.rootCompany = this.pageResult.data
+                this.currentPage = this.pageResult.data.current_page  
+            }else{
+                await this.$store.dispatch('changePage', [url, action])
+            }
+            
+                
+         
+              
+        },
         searchData(){
             this.companies = []
             this.isDone = false
@@ -242,6 +288,7 @@ export default {
                             'success'
                         )
                         this.fetchCompanies()
+                        console.log('deleted')
                     })
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     swalWithBootstrapButtons.fire(
@@ -325,10 +372,13 @@ export default {
     
         fetchCompanies(){
             this.companies = []
-            axios.get('/companies?is_active=active')
+            axios.get('/companies?page=1')
             .then(response=>{
                 let result = response.data
                 let holder = result.data
+                this.rootCompany = result.data
+
+                console.log(this.rootCompany)
                 
                 holder.data.forEach(hold=>{
                     this.companies.push({

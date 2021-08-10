@@ -10,8 +10,8 @@
             <Loading class="loader"/>
         </div>
         <form autocomplete="off">
-        <div class="grid-header">
-            <div class="row pt-2 pl-4 pr-4"> 
+        <div class="grid-header p-0 m-0">
+            <div class="row mt-0 pt-0 pl-4 pr-4"> 
                 <div class="col-lg-4 p-1" v-if="shiftBox != 4">
                   <div class="col-lg-12 px-5 my-card">
 
@@ -834,6 +834,7 @@ export default {
 
 
         amountError: '',
+        cat: []
 
         
         
@@ -849,7 +850,7 @@ export default {
       this.checkCookie()
       this.getNow()
       // this.autoValue()
-      
+     
     },
     
     methods:{
@@ -909,49 +910,104 @@ export default {
       this.po_group.sort((a, b)=>{
         return a.po_no - b.po_no
       })
+
+      let convert1
+      let convert2
+      let convert3
+      let convert4
+      let convert5
+      
+      if(this.documentAmount.length > 0){
+        convert1 = this.documentAmount.replace(/,/g, '')
+      }else{
+        convert1 = "0"
+      }
+
+      if(this.totalAmount.length > 0){
+        convert2 = this.totalAmount.replace(/,/g, '')
+      }else{
+        convert2 = "0"
+      }
+
+      if(this.totalQty.length > 0){
+        convert3 = this.totalQty.replace(/,/g, '')   
+      }else{
+        convert3 = "0"
+      }
+      
+      if(this.totalRefAmount.length > 0){
+        convert4 = this.totalRefAmount.replace(/,/g, '')  
+      }else{
+        convert4 = "0"
+      }
+      
+      if(this.totalRefQuantity.length > 0){
+        convert5 = this.totalRefQuantity.replace(/,/g, '')
+      }else{
+        convert5 = "0"
+      }
+
+        
+      
+
         let data = {
+          "id_prefix": this.result.id_prefix,
           "users_id": this.result.id,
-          "id_prefix": this.result.prefix,
           "id_no": this.result.id_no,
           "first_name": this.result.first_name,
           "middle_name":this.result.middle_name,
           "last_name": this.result.last_name,
-          "suffix": this.result.suffix,
+          "suffix": null,
           "department": this.result.department,
-          "date_requested": this.timestamp,
-          "transaction_id": 'Dummy ID',
           "document_id": this.documentType,
           "document_type": this.documentTypeInfo,
           "category_id": this.documentCategory,
           "category": this.categoryInfo,
-          "document_no": this.documentNumber,
-          "document_amount": this.documentAmount,
-          "document_date": this.documentDate,
+          "payment_type": this.paymentType,
           "company_id": this.documentCompany,
           "company": this.companyInfo,
+          "document_no": this.documentNumber,
           "supplier_id": this.documentSupplier,
           "supplier": this.supplierInfo,
-          "po_group": this.po_group,
-          "po_total_amount": this.totalAmount,
-          "po_total_qty": this.totalQty,
-          "rr_total_qty": 23085.79,
-          "referrence_group": this.refList,
-          "referrence_total_amount": this.totalRefAmount,
-          "referrence_total_qty": this.totalRefQuantity,
-          "payment_type": this.paymentType,
-          "status": "Pending",
+          "document_date": this.documentDate,
+          "document_amount": parseFloat(convert1), //
           "remarks": this.documentRemarks,
 
-          "total_balance": this.totalBalanceOne,
-          "pcf_letter": this.pcfLetter,
-          "pcf_date":this.pcfDate,
-          "date_from": this.dateFrom,
-          "date_to": this.dateTo,
-          "description": null,
+          "po_group": this.po_group,
+          "referrence_group": this.refList,
+
+
+
+
+
+          "date_requested": this.timestamp,
+
           "reason_id": null,
           "reason": null,
-          "reason_remarks": null,
+
+          "pcf_date":this.pcfDate,
+          "pcf_letter": this.pcfLetter,
+
+          "utilities_from": this.dateFrom,
+          "utilities_to": this.dateTo,
+
+
+          "po_total_amount": parseFloat(convert2), //
+          "po_total_qty": parseFloat(convert3), //
+          // "rr_total_qty": 23085.79,
+          "referrence_total_amount": parseFloat(convert4), //
+          "referrence_total_qty": parseFloat(convert5), //
+
+
+          
+          
+
+          
+          ////////////////////
+
+          
         }
+
 
         Swal.fire({
           title: 'Do you want to save data?',
@@ -963,10 +1019,25 @@ export default {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
               this.isDone = false
-              axios.post(`http://localhost:3000/transaction`, data).then(res=>{
-                this.$router.push({name: 'RequestTagging'})
-                // console.log("DATA SAVED SUCCESSFULLY",data)
-              })   
+              axios.post(`/transactions`, data).then(res=>{
+                // this.$router.push({name: 'RequestTagging'})
+                let status = res.data
+                if(status.code == 403){
+                  this.isDone = true
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: status.message.toUpperCase()
+                  }) 
+                }else{
+                  this.isDone = true
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Saved',
+                    text: 'Transaction Saved successfully'
+                  }) 
+                }
+              })
           } else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
           }
@@ -1474,17 +1545,26 @@ export default {
             }else{
               this.withCategories = true
               this.categories = result.categories
-              axios.get(`/categories`).then(res=>{
-                let cat = res.data
-                let final = cat.data
-                // console.log(final)
-                final.forEach((category, index)=>{
-                  result.categories.forEach(cat=>{
+              axios.get(`/categories/all`).then(res=>{
+                let final = res.data
+                
+
+                console.log(final)
+
+                
+                
+                
+                result.categories.forEach(cat=>{
+                  final.forEach((category, index)=>{
+
                     if(category.id == cat){
+                      console.log("same")
                       this.cat.push(category)
                     }
                   })
                 })
+
+                
               })
             }
           })
@@ -1504,7 +1584,7 @@ export default {
         }).catch(err=>{
            let msg = err.response.data.errors
             this.isDone = true
-            Swal.fire(msg.referrence_type[0], 'Data not Updated', 'warning')
+            Swal.fire('Server Error', 'Data not Updated', 'warning')
         })
       },
       fetchDocuments(){
@@ -1569,7 +1649,7 @@ export default {
           
             axios.get(`/users/${this.userId}`).then(res=>{
               this.result = res.data
-              // console.log(this.result)
+              console.log(this.result)
             })
       },
 
@@ -2143,7 +2223,7 @@ export default {
 
   .absolute-div{
     position:absolute;
-    background:rgb(180, 148, 148);
+    background:rgb(255, 254, 254);
     padding:3px 8px;
     color:white;
     top:-10px;
@@ -2257,13 +2337,12 @@ export default {
 
   .my-card{
     position:relative;
-    border:1px solid rgb(190, 190, 190);
-    
     padding:20px 0;
- 
-
+	  background: rgba(255, 255, 255, 0.568);
+    border:1px solid #98c6f9;
     border-radius:5px;
-    background:rgb(241, 241, 241);
+    margin-top:25px !important;
+    top: -45px;
   }
 
     .text-black{

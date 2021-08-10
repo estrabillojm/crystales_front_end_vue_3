@@ -5,17 +5,20 @@
 #sidebar{
   width:100%;
   position:absolute;
-  background:#172B4D;
+  /* background:#003366; */
+  background-image: linear-gradient(#0145b3,#045de9, #09c6f9);
 }
 
 .sidebar-brand a{
   display:flex;
   justify-content:center;
+ 
 }
+
+
 
 .side-logo{
   max-width:180px;
-
 }
 
 @media(max-width:768px){
@@ -25,9 +28,9 @@
   }
 
   .sidebar-container{
-  position:relative;
-  grid-column:1/2;
-}
+    position:relative;
+    grid-column:1/2;
+  }
 
   .main-container{
     border:3px solid red;

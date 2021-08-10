@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import axios from 'axios'
 
 
 // ADMINISTRATOR
@@ -45,7 +46,9 @@ import Releasing from '../views/supervisor/Releasing'
 
 // GAS
 import IdentifyTransaction from '../views/gas/Index'
+import IdentifyTransactionModify from '../views/gas/IdentifyTransactionModify'
 import MatchingOfVoucher from '../views/gas/MatchingOfVoucher'
+import MatchingOfVoucherModify from '../views/gas/MatchingOfVoucherModify'
 
 
 // FILING CLERK
@@ -73,57 +76,70 @@ import TransactionApproval from '../views/manager/TransactionApproval'
 // AP ASSOCIATE
 import CreationOfVoucher from '../views/apassociate/CreationOfVoucher'
 
+
+import TransactionHistory from '../views/history/TransactionHistory'
+
+let redirect = (to, from, next) =>{
+  next()
+  // axios.get('/authenticated').then(()=>{ next() }).catch(()=>{return next({ name: 'Home' }) })
+}
+
+
+
 const routes = [
 
+  { path: '/transaction-history',name: 'TransactionHistory', component: TransactionHistory, beforeEnter: redirect}, 
 
   // AP ASSOCIATE
-  { path: '/approval',name: 'Approval', component: Approval}, 
-  { path: '/activity-logs',name: 'ActivityLogs', component: ActivityLogs}, 
-  { path: '/transaction-approval',name: 'TransactionApproval', component: TransactionApproval}, 
+  { path: '/approval',name: 'Approval', component: Approval, beforeEnter: redirect}, 
+  { path: '/activity-logs',name: 'ActivityLogs', component: ActivityLogs, beforeEnter: redirect}, 
+  { path: '/transaction-approval',name: 'TransactionApproval', component: TransactionApproval, beforeEnter: redirect}, 
 
 
   // AP ASSOCIATE
-  { path: '/creation-of-voucher',name: 'CreationOfVoucher', component: CreationOfVoucher}, 
+  { path: '/creation-of-voucher',name: 'CreationOfVoucher', component: CreationOfVoucher, beforeEnter: redirect}, 
 
   //TREASURY
-  { path: '/creation-of-cheque',name: 'CreationOfCheque', component: CreationOfCheque}, 
-  { path: '/clearing-of-cheque',name: 'ClearingOfCheque', component: ClearingOfCheque}, 
+  { path: '/creation-of-cheque',name: 'CreationOfCheque', component: CreationOfCheque, beforeEnter: redirect}, 
+  { path: '/clearing-of-cheque',name: 'ClearingOfCheque', component: ClearingOfCheque, beforeEnter: redirect}, 
 
 
   // AP SPECIALIST
-  { path: '/receive-receipt-report',name: 'ReceivedReceiptReport', component: ReceivedReceiptReport}, 
-  { path: '/checking-of-voucher',name: 'CheckingOfVoucher', component: CheckingOfVoucher}, 
-  { path: '/approving-of-voucher',name: 'ApprovingOfVoucher', component: ApprovingOfVoucher}, 
+  { path: '/receive-receipt-report',name: 'ReceivedReceiptReport', component: ReceivedReceiptReport, beforeEnter: redirect}, 
+  { path: '/checking-of-voucher',name: 'CheckingOfVoucher', component: CheckingOfVoucher, beforeEnter: redirect}, 
+  { path: '/approving-of-voucher',name: 'ApprovingOfVoucher', component: ApprovingOfVoucher, beforeEnter: redirect}, 
 
   // FILING CLERK
-  { path: '/distribute-transaction',name: 'DistributeTransaction', component: DistributeTransaction}, 
+  { path: '/distribute-transaction',name: 'DistributeTransaction', component: DistributeTransaction, beforeEnter: redirect}, 
 
 
   // GAS
-  { path: '/identify-transaction',name: 'IdentifyTransaction', component: IdentifyTransaction}, 
-  { path: '/matching-of-voucher',name: 'MatchingOfVoucher', component: MatchingOfVoucher}, 
+  { path: '/identify-transaction',name: 'IdentifyTransaction', component: IdentifyTransaction, beforeEnter: redirect}, 
+  { path: '/identify-transaction-modify',name: 'IdentifyTransactionModify', component: IdentifyTransactionModify, beforeEnter: redirect}, 
+  { path: '/matching-of-voucher',name: 'MatchingOfVoucher', component: MatchingOfVoucher, beforeEnter: redirect}, 
+  { path: '/matching-of-voucher-modify',name: 'MatchingOfVoucherModify', component: MatchingOfVoucherModify, beforeEnter: redirect}, 
 
   // SUPERVISOR
-  { path: '/edited-tag',name: 'EditedTag', component: EditedTag}, 
-  { path: '/tagging-and-vouchering',name: 'TaggingAndVouchering', component: TaggingAndVouchering}, 
-  { path: '/releasing',name: 'Releasing', component: Releasing}, 
+  { path: '/edited-tag',name: 'EditedTag', component: EditedTag, beforeEnter: redirect}, 
+  { path: '/tagging-and-vouchering',name: 'TaggingAndVouchering', component: TaggingAndVouchering, beforeEnter: redirect}, 
+  { path: '/releasing',name: 'Releasing', component: Releasing, beforeEnter: redirect}, 
 
   
   // TAGGING
-  { path: '/document-tagging',name: 'Tagging', component: Tagging}, 
-  { path: '/view-tagging/:id', name: 'ViewTagging', component: ViewTagging},
-  { path: '/releasing-of-cheque/', name: 'ReleasingOfCheque', component: ReleasingOfCheque},
-  { path: '/tagged-reports/', name: 'TaggedReports', component: TaggedReports},
-  { path: '/cheque-reports/', name: 'ChequeReports', component: ChequeReports},
-  { path: '/counter-receipt/', name: 'CounterReceipt', component: CounterReceipt},
+  { path: '/document-tagging',name: 'Tagging', component: Tagging, beforeEnter: redirect}, 
+  { path: '/view-tagging/:id', name: 'ViewTagging', component: ViewTagging, beforeEnter: redirect},
+  { path: '/releasing-of-cheque/', name: 'ReleasingOfCheque', component: ReleasingOfCheque, beforeEnter: redirect},
+  { path: '/tagged-reports/', name: 'TaggedReports', component: TaggedReports, beforeEnter: redirect},
+  { path: '/cheque-reports/', name: 'ChequeReports', component: ChequeReports, beforeEnter: redirect},
+  { path: '/counter-receipt/', name: 'CounterReceipt', component: CounterReceipt, beforeEnter: redirect},
 
 
 
   //REQUESTOR
-  { path: '/request-tagging',name: 'RequestTagging', component: Requestors}, 
-  { path: '/new-request',name: 'NewRequest', component: NewRequest}, 
-  { path: '/edit-request/:id',name: 'EditRequest', component: EditRequest}, 
-  {path: '/view-request/:id', name: 'ViewRequest', component: ViewRequest},
+  { path: '/request-tagging',name: 'RequestTagging', component: Requestors, beforeEnter: redirect}, 
+  { path: '/new-request',name: 'NewRequest', component: NewRequest, beforeEnter: redirect}, 
+  { path: '/edit-request/:id',name: 'EditRequest', component: EditRequest, beforeEnter: redirect}, 
+  { path: '/view-request/:id', name: 'ViewRequest', component: ViewRequest, beforeEnter: redirect},
 
 
 
@@ -132,20 +148,21 @@ const routes = [
 
 
   //ADMINISTRATOR
-  { path: '/users',name: 'Users', component: Admin}, // USERS LIST
-  { path: '/add-users',name: 'AddUser', component: AddUser}, // ADD USER
-  { path: '/suppliers',name: 'Suppliers', component: Suppliers}, // SUPPLIER
-  { path: '/supplier-type',name: 'SupplierType', component: SupplierType}, // SUPPLIER TYPE
-  { path: '/users/edit/:id',name: 'EditUser', component: EditUser}, // SHOW USER
-  { path: '/category',name: 'AddCategory', component: AddCategory}, //ADD/SHOW CATEGORIES
-  { path: '/documents',name: 'Documents', component: Documents}, // SHOW DOCUMENT 
-  { path: '/add-documents',name: 'AddDocuments', component: AddDocuments}, // ADD DOCUMENT
-  { path: '/edit-documents/:id',name: 'EditDocuments', component: EditDocuments}, // EDIT DOCUMENT
-  { path: '/edit-documents/:id',name: 'EditDocuments', component: EditDocuments}, // EDIT DOCUMENT
-  { path: '/companies',name: 'Companies', component: Companies}, //COMPANIES
-  { path: '/reasons',name: 'Reasons', component: Reasons}, //REASONS
-  { path: '/banks',name: 'Banks', component: Banks}, //BANKS
-  { path: '/referrences',name: 'Referrences', component: Referrences}, //BANK
+  { path: '/users',name: 'Users', component: Admin, beforeEnter: redirect}, // USERS LIST
+
+  { path: '/add-users',name: 'AddUser', component: AddUser, beforeEnter: redirect}, // ADD USER
+  { path: '/suppliers',name: 'Suppliers', component: Suppliers, beforeEnter: redirect}, // SUPPLIER
+  { path: '/supplier-type',name: 'SupplierType', component: SupplierType, beforeEnter: redirect}, // SUPPLIER TYPE
+  { path: '/users/edit/:id',name: 'EditUser', component: EditUser, beforeEnter: redirect}, // SHOW USER
+  { path: '/category',name: 'AddCategory', component: AddCategory, beforeEnter: redirect}, //ADD/SHOW CATEGORIES
+  { path: '/documents',name: 'Documents', component: Documents, beforeEnter: redirect}, // SHOW DOCUMENT 
+  { path: '/add-documents',name: 'AddDocuments', component: AddDocuments, beforeEnter: redirect}, // ADD DOCUMENT
+  { path: '/edit-documents/:id',name: 'EditDocuments', component: EditDocuments, beforeEnter: redirect}, // EDIT DOCUMENT
+  { path: '/edit-documents/:id',name: 'EditDocuments', component: EditDocuments, beforeEnter: redirect}, // EDIT DOCUMENT
+  { path: '/companies',name: 'Companies', component: Companies, beforeEnter: redirect}, //COMPANIES
+  { path: '/reasons',name: 'Reasons', component: Reasons, beforeEnter: redirect}, //REASONS
+  { path: '/banks',name: 'Banks', component: Banks, beforeEnter: redirect}, //BANKS
+  { path: '/referrences',name: 'Referrences', component: Referrences, beforeEnter: redirect}, //BANK
 
 
 

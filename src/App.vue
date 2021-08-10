@@ -1,5 +1,4 @@
 <template>
-  
   <router-view/>
 </template>
 
@@ -9,6 +8,23 @@
   margin:0;
   box-sizing:border-box;
   font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
+}
+
+.custom-card-bd-img{
+    padding: 40px;
+    margin: auto;
+	  background: rgba(255, 255, 255, 0.568);
+	  border: 3px solid transparent;
+	  
+	  /* border-image: linear-gradient(to right, #a8c2eb 0%, #09c6f9 100%);
+	  border-image-slice: 1; */
+    border:1px solid #98c6f9;
+    border-radius:5px;
+    margin-top:25px !important;
+}
+
+.grid-header{
+  padding-left:20px;
 }
 
 .text-no-show{
@@ -70,8 +86,12 @@ em{
 
 #cr-grid{
   display:grid;
-
   grid-template-columns:repeat(12, 1fr);
+  background:url('./assets/bg.png');
+  background-repeat:no-repeat;
+  background-size:cover;
+  
+  
 }
 
 .sidebar-container{
@@ -82,6 +102,7 @@ em{
 .main-container{
   grid-column:3/13;
   box-sizing:border-box;
+  padding:50px 30px;
 }
 
 .content{
@@ -129,12 +150,10 @@ em{
 }
 
 .cr-data-content{
-  background:#172B4D;
+  background:white;
   border-radius:10px;
   width:100%;
-  
   margin-top:0;
-
 }
 
 .flex-input{
@@ -170,7 +189,7 @@ em{
 
 .flex-table .thead{
   color:white;
-  background:#1C345D;
+  background:#045de9;
   height:30px;
 
   
@@ -178,10 +197,26 @@ em{
 
 .flex-table .thead th{
   padding:10px 5px;
-  color:#596FEC;
+  color:white;
 }
 
 
+.text-warning{
+  color:#7a7e88 !important;
+}
 
+
+.btn-warning{
+  color:#7a7e88 !important;
+}
+
+.ellipsis{
+  display:block;
+  width:30px;
+}
+
+.setMaxWidth *{
+  cursor: pointer;
+}
 
 </style>

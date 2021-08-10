@@ -259,7 +259,7 @@ export default {
     methods:{
       fetchMyRequest(){
         let id = this.$route.params.id
-        axios.get(`http://localhost:3000/transaction/${id}`).then(res=>{
+        axios.get(`transactions/${id}`).then(res=>{
           let holder = res.data
           this.documentType = holder.document_id
           this.documentTypeInfo = holder.document_type

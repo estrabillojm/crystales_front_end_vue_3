@@ -6,7 +6,7 @@
     <div class="main-container">
       <Navbar/>
 
-      <DataTable v-if="myRequest.length != 0">
+      <DataTable>
 
         <template v-slot:tb-extra-btn>
           
@@ -14,6 +14,12 @@
           
               <button class="btn btn-success mb-1" type="button">New Request</button>
             </router-link>
+
+
+            <router-link :to="{name: 'TransactionHistory'}">
+              <button class="btn mb-1 ml-2" type="button">History</button>
+            </router-link>
+
         </template>
 
         <template v-slot:tb-btn-tab>
@@ -38,6 +44,8 @@
         <template v-slot:tb-search>
           <input type="text" @keyup.enter="searchData()" v-model="query" placeholder="Search">
         </template>
+
+
         <template v-slot:tb-header>
           <th>Date Requested</th>
           <th>Transaction No.</th>
@@ -51,8 +59,12 @@
           <th>Status</th>
           <th class="text-center">Action</th>
         </template>
+
+        <template v-slot:tb-no-data v-if="myRequest.length == 0">
+          <td class="text-center text-no-show" colspan=11>No Data to Show</td>
+        </template>
         
-        <template v-slot:tb-data>
+        <template v-slot:tb-data v-else>
             <tr v-for="(request, index) in myRequest" :key="index" class="requestors-request">
               <td>{{ request.date_requested }}</td>
               <td>{{ request.transaction_id }}</td>
@@ -61,7 +73,7 @@
               <td>{{ request.supplier }}</td>
               <td v-if="request.po_total_amount != 0">{{ request.po_total_amount }}</td>
               <td v-else><span class="material-icons gray-text">remove</span></td>
-              <td v-if="request.referrence_total_amount != 0">{{ request.referrence_total_amount }}</td>
+              <td v-if="request.referrence_total_amount != null">{{ request.referrence_total_amount }}</td>
               <td v-else><span class="material-icons gray-text">remove</span></td>
               <td v-if="request.document_amount">{{ request.document_amount }}</td>
               <td v-else><span class="material-icons gray-text">remove</span></td>
@@ -69,11 +81,11 @@
               <td>{{ request.status }}</td>
               <td class="text-center">
 
-                <router-link :to="{name: 'ViewTagging', params: {id: request.id }}">
+                <!-- <router-link :to="{name: 'ViewTagging', params: {id: request.id }}">
                   <span class="material-icons text-secondary btn-icon" title="Modify Request">
                     find_in_page
                   </span>
-                </router-link>
+                </router-link> -->
 
 
                 &nbsp;
@@ -95,11 +107,21 @@
             </tr>
         </template>
 
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
       </DataTable>
 
       
 
-      <div class="content" v-else>
+      <!-- <div class="content" v-else>
       
       <div class="cr-datatable">
             <div class="cr-data-btn">
@@ -114,7 +136,7 @@
               <p class="text-white lead">No Data to Show</p>
             </div>
         </div>
-      </div>
+      </div> -->
 
       
     </div>
@@ -127,7 +149,7 @@ import Navbar from '../../components/shared-components/Navbar'
 import DataTable from '../../components/shared-components/DataTable'
 import Modal from '../../components/shared-components/Modal'
 import Loading from '../../components/shared-components/Loading'
-import {mapState} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 import axios from 'axios'
 
 export default {
@@ -142,12 +164,18 @@ export default {
     },
     created(){
        this.fetchMyRequest()
+       this.$store.dispatch('setHeaderTitle','Tagging of Request')
     },
     computed:{
+      	...mapState([
+          'currentPage',
+          'rootData'
+        ]),
         
         
     },
     methods:{
+
       filterStatus(id){
         this.isActive = id
       },
@@ -156,7 +184,7 @@ export default {
 
       },
       fetchMyRequest(){
-        axios.get('http://localhost:3000/transaction').then(res=>{
+        axios.get('/transactions').then(res=>{
           this.myRequest = res.data
         })
       },

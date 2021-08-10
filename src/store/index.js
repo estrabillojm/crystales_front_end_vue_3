@@ -1,5 +1,9 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import requests from './modules/requests'
+
+
 export default createStore({
   state: {
     posts: [], 
@@ -21,17 +25,24 @@ export default createStore({
     prm:[],
     contractor:[],
     category: [],
-    
+    pageResult: [],
+    searchResult:[],
+    currentPage: 1,
+    rootData: null,
+    backRoute: '',
+    headerTitle: null
   },
       
 
   // MUTATIONS
   mutations: {
+    setHeaderTitle: (state, value)=>{
+      state.headerTitle = value
+    },
    
     LOAD_CATEGORY(state, category){
       state.category = category
     },
-
     LOAD_POSTS(state, posts){
       state.posts = posts
     },
@@ -59,12 +70,51 @@ export default createStore({
     LOAD_CONTRACTORCATEGORY(state, loadContractorCategory){
       state.contractor = loadContractorCategory
     },
+
+    changePage(state, value){
+      state.pageResult = value 
+    },
+
+    backRoute(state, route){
+      this.$router.push(route)
+    }
     
   },
 
 
   // ACTIONS
   actions: {
+    setHeaderTitle: ({commit}, value)=>{
+      commit('setHeaderTitle', value)
+    },
+    async changePage({ commit }, arr){
+      if(arr[1] == 1 && arr[0] == null){
+        Swal.fire({
+            icon: 'info',
+            title: 'Not Allowed',
+            text: "This is the first page"
+        }) 
+    }else if(arr[1] == 2 && arr[0] == null){
+        Swal.fire({
+            icon: 'info',
+            title: 'Not Allowed',
+            text: "This is the last page"
+        }) 
+    }else{
+      await axios.get(`${arr[0]}`)
+        .then(response=>{
+          
+          commit('changePage', response.data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+        
+      
+      
+    },
 
    
 
@@ -144,5 +194,6 @@ export default createStore({
     }, 
   },
   modules: {
+    requests
   }
 })

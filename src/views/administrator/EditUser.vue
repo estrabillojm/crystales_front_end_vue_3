@@ -296,7 +296,7 @@ export default {
         fetchCategory(){
             axios.get(`/categories/all`).then(res=>{
                 this.category = res.data
-                console.log(this.category)
+                console.log('CATEGORY', this.category)
             })
         },
         userUpdate(){
@@ -314,7 +314,7 @@ export default {
                 perm.push(ob)
             })
 
-            console.log(perm)
+            console.log('object', perm)
 
             
             Swal.fire({
@@ -489,9 +489,9 @@ export default {
                 
                 
                 this.userData.document_types.forEach(sl=>{
-                    
+                    console.log("HEY", sl)
                     this.documentArray.push(sl.document_id)
-                    console.log(sl.document_id)
+                    // console.log('DOCUMENTS', sl.document_id)
                 })
                 
                 axios.get(`/documents?is_active=active`).then(res => {

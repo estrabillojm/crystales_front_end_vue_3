@@ -10,7 +10,7 @@
                 <Loading class="loader"/>
             </div>
             <div class="row">
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     <form @submit.prevent="refsave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Type</label>
@@ -54,8 +54,9 @@
                 </div>
                 
                 
-                <div class="col-md-8 pt-1">
-                    <DataTable>
+            <div class="col-md-8 pt-1">
+                
+    <DataTable>
 
         
         <template v-slot:tb-btn-tab>
@@ -78,15 +79,37 @@
         <template v-slot:tb-data>
           <tr class="hovered" v-for="ref in refs" :key="ref.id">
             <td>{{ ref.id }}</td>
-            <td>{{ ref.type }}</td>
-            <td>{{ ref.description }}</td>
+            <td>{{ ref.referrence_type }}</td>
+            <td>{{ ref.referrence_description }}</td>
             <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(ref.id, ref.type, ref.description)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="refArchive(ref.id)">Archive</button>
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1" @click="editMode(ref.id, ref.referrence_type, ref.referrence_description)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1"  @click="refArchive(ref.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
             </td> 
         </tr>
         </template>
+
+        <template v-slot:tb-paginate>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootRef.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootRef.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
+
       </DataTable>
       
                 </div>
@@ -127,14 +150,37 @@ export default {
                active: true
             },
             isDone: true,
-            query: ''
+            query: '',
+            rootRef: [],
+            currentPage: 1
        }
     },
     created(){
         this.fetchrefs()
+        this.$store.dispatch('setHeaderTitle', null)
+
+    },
+    computed:{
+        ...mapState([
+            'pageResult'
+        ])
     },
  
     methods:{
+        async changePage(url, action){
+            if(url != null){
+                await this.$store.dispatch('changePage', [url, action])
+                this.refs = this.pageResult.data.data
+                this.rootRef = this.pageResult.data
+                this.currentPage = this.pageResult.data.current_page  
+                console.log(this.refs)
+            }else{
+                await this.$store.dispatch('changePage', [url, action])
+            }
+            
+         
+              
+        },
         searchData(){
             this.refs = []
             this.isDone = false
@@ -300,15 +346,17 @@ export default {
             axios.get('/referrences?is_active=active')
             .then(response=>{
                 let result = response.data
-                console.log(result)
+                
                 let holder = result.data
+                this.rootRef = holder
+                console.log("HOLDER",holder)
                 
                 
                 holder.data.forEach(hold=>{
                     this.refs.push({
                         id: hold.id,
-                        type: hold.referrence_type,
-                        description: hold.referrence_description.toUpperCase(),
+                        referrence_type: hold.referrence_type,
+                        referrence_description: hold.referrence_description.toUpperCase(),
                         created_at: moment(hold.created_at).format('LL')
                     })
                 })        

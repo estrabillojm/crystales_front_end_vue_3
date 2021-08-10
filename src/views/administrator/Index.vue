@@ -86,28 +86,47 @@
               <span v-if="user.inactive_date">user.inactive_date</span>
               <span v-else>-</span>
             </td>
+
+            
            
            
             <td class="text-center">
+       
+              <div class="btn-group setMaxWidth" role="group">   
+                  <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  
+                  <button class="dropdown-item mb-1" data-toggle="modal" data-target="#myModalView" @click="userDataView(user.id)">
+                      <span class="text-primary">View</span> 
+                  </button>
+
+                  <button class="dropdown-item text-black mb-1" @click="editPage(user.id)">
+                    <!-- <router-link class="ml-1" :to="{name: 'EditUser', params:{ id: user.id}}"> -->
+                      <span class="text-warning">Edit</span> 
+                  </button>
+
+                  <button class="dropdown-item text-black mb-1" @click="archive(user.id)">
+                      <span class="text-danger">Delete</span> 
+                  </button>
+                  </div>
+              </div>
+
+
+
                 
-                <button class="btn btn-success btn-sm btn-show-parent"  data-toggle="modal" data-target="#myModalView" @click="userDataView(user.id)">
+                <!-- <button class="btn btn-success btn-sm btn-show-parent"  data-toggle="modal" data-target="#myModalView" @click="userDataView(user.id)">
                   <span class="material-icons btn-show">visibility</span>
                   View</button>
-                
-
-
                 <router-link class="ml-1" :to="{name: 'EditUser', params:{ id: user.id}}">
                   <button class="btn btn-info btn-sm btn-show-parent">
                     <span class="material-icons btn-show">edit</span>
                     Edit</button>
                 </router-link>
 
-
-                
-                  <button class="btn btn-warning btn-sm btn-show-parent ml-1" @click="archive(user.id)">
-                    <span class="material-icons btn-delete">delete</span>
-                    Archive
-                  </button>
+                <button class="btn btn-warning btn-sm btn-show-parent ml-1">
+                  <span class="material-icons btn-delete text-warning"  @click="archive(user.id)">delete</span>
+                  Abc
+                </button> -->
 
                 
             </td>
@@ -120,6 +139,16 @@
       <!-- USER MODAL -->
  
         </tr>
+        </template>
+
+          <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootUser.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootUser.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
         </template>
       </DataTable>
 
@@ -169,12 +198,6 @@
               </div>
             </div>
           </transition>
-
-          
-
-
-         
-          
         </template>
       </Modal>
 
@@ -189,9 +212,6 @@
 </template>
 
 <script>
-import Sidebar from '../../components/shared-components/Sidebar'
-import Navbar from '../../components/shared-components/Navbar'
-import DataTable from '../../components/shared-components/DataTable'
 import Modal from '../../components/non-shared/UserDetailModal'
 import Loading from '../../components/shared-components/Loading'
 import {mapState} from 'vuex'
@@ -199,7 +219,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 
 export default {
-    components: { Sidebar, Navbar, DataTable, Modal, Loading},
+    components: { Modal, Loading},
     data(){
       return {
         result: false, 
@@ -223,6 +243,8 @@ export default {
         },
         catIdHolder: null,
         query: '',
+        rootUser: [],
+        currentPage: 1,
         
       }
     },
@@ -232,6 +254,10 @@ export default {
 
         this.$store.dispatch('loadPermissions')
 
+        this.fetchUser()
+
+        
+
     },
     computed:{
         
@@ -239,11 +265,31 @@ export default {
             'users',
             'roles',
             'permissions',
+            'pageResult',
            
-        ]),
+        ])
         
     },
     methods:{
+
+      editPage(userId){
+        this.$router.push({name: 'EditUser', params:{ id: userId}})
+      },
+      async changePage(url, action){
+
+        await this.$store.dispatch('changePage', [url, action])
+        if(url != null){
+          this.users = this.pageResult.data
+          this.rootUser = this.pageResult
+          this.currentPage = this.pageResult.data.current_page       
+        }
+
+      },
+      async fetchUser(){
+        await setTimeout(()=>{
+          this.rootUser = this.users
+        }, 500)
+      },
       searchData(){
         alert("ok")
       },
@@ -461,14 +507,13 @@ export default {
     color:rgb(97, 97, 97);
 }
 
-.btn-show-parent{
+/* .btn-show-parent{
   position:relative;
   overflow:hidden;
-  
 
-}
+} */
 
-.btn-show{
+/* .btn-show{
   position:absolute;
   color:rgb(23, 126, 23);
   font-size:30px;
@@ -485,7 +530,7 @@ export default {
   right:-12px;
   bottom:-12px;
   opacity:.6;
-}
+} */
 
 form{
   min-height:600px;
@@ -500,10 +545,10 @@ form{
 
 
 
-  .first-input-group{
-    border:none;
-    padding:5px 20px;
-  }
+.first-input-group{
+  border:none;
+  padding:5px 20px;
+}
 
   .first-input-group input[type="text"]{
     background:white;

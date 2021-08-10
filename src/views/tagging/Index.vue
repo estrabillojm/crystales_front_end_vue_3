@@ -88,6 +88,16 @@
             </tr>
         </template>
 
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
       </DataTable>
 
     
@@ -121,8 +131,13 @@ export default {
     created(){
        this.fetchMyRequest()
        this.loadPendings()
+       this.$store.dispatch('setHeaderTitle','Tagging of Documents')
     },
     computed:{
+      ...mapState([
+        'currentPage',
+        'rootData'
+      ])
         
         
     },
@@ -130,18 +145,18 @@ export default {
       filterStatus(id, status){
         this.isActive = id
         if(status=='received'){
-          axios.get(`http://localhost:3000/transaction?status=received`).then(res=>{
+          axios.get(`/transactions?status=received`).then(res=>{
             this.myRequest = res.data
           })
         }else{
-          axios.get(`http://localhost:3000/transaction?status=${status}`).then(res=>{
+          axios.get(`/transactions?status=${status}`).then(res=>{
             this.myRequest = res.data
           })
         }
         
       },
       loadPendings(){
-        axios.get(`http://localhost:3000/transaction`).then(res=>{
+        axios.get(`/transactions`).then(res=>{
           this.myRequest = res.data
         })
       },
@@ -154,7 +169,7 @@ export default {
             confirmButtonText: `Receive`,
             }).then((result) => {
             if (result.isConfirmed) {
-              axios.patch(`http://localhost:3000/transaction/${id}`, {
+              axios.patch(`/transactions/${id}`, {
                 status: 'received by AP tagging'
               }).then(()=>{
                 Swal.fire('Received!', '', 'success')
@@ -167,7 +182,7 @@ export default {
         this.paymentStatus = stat
       },
       fetchMyRequest(){
-        axios.get('http://localhost:3000/transaction').then(res=>{
+        axios.get('http://localhost:3000/transactions').then(res=>{
           this.myRequest = res.data
         })
       }

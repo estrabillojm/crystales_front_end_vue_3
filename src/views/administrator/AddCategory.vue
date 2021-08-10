@@ -14,7 +14,7 @@
             
             
             <div class="row">
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     
                     <form @submit.prevent="addCategory()" autocomplete="off">
                         <div class="form-group">
@@ -77,18 +77,41 @@
         </template>
         
         <template v-slot:tb-data>
-
+            
           
-          <p class="text-white">{{ categories }}</p>
+          
           <tr v-for="cat in category.data" :key="cat.id" class="hovered">
+              
             <td>{{ cat.id }}</td>
             <td>{{ cat.name.toUpperCase() }}</td>
             <td class="text-center">
-                <button class="btn btn-sm btn-info" data-toggle="modal" :data-target="`#myModal${cat.id}`"  @click="editMode(cat.id, cat.name)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="archivePrm(cat.id)">Archive</button>
+      
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1" @click="editMode(cat.id, cat.name)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1" @click="archivePrm(cat.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
+            
             </td>
         </tr>
         </template>
+
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><button class="page-link" @click="changePage(category.prev_page_url, 1)">Previous</button></li>
+                <li class="page-item"><button class="page-link">{{ currentPage}}</button></li>               
+                <li class="page-item"><button class="page-link" @click="changePage(category.next_page_url, 2)">Next</button></li>
+            </ul>
+            </nav>
+        </template>
+
       </DataTable>
                 </div>
             </div>
@@ -124,16 +147,38 @@ export default {
             updateName: '',
             category: '',
             updateForm: false,
-            isDone: true
+            isDone: true,
+            currentPage: 1,
+            query: null
+           
         }
     },
     created(){
         this.paginateCategory()  
+        this.$store.dispatch('setHeaderTitle', null)
     },
     computed:{
-        
+
+        ...mapState([
+            'searchResult',
+            'pageResult'
+        ]),  
     },
     methods:{
+
+        async changePage(url, action){
+            if(url != null){
+                await this.$store.dispatch('changePage', [url, action])
+                this.category = this.pageResult
+                this.currentPage = this.pageResult.current_page
+            }else{
+                await this.$store.dispatch('changePage', [url, action])
+            }
+
+            
+            
+        },
+
         searchData(){
             this.isDone = false
             axios.post(`/categories/search`, {
@@ -167,7 +212,7 @@ export default {
         },
         paginateCategory(){
             axios.get('/categories?is_active=active').then(res=>{
-                this.category = res.data
+                this.category = res.data           
                 
             })
         },

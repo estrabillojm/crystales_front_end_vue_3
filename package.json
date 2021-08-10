@@ -8,16 +8,18 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "gsap": "^3.6.1",
     "json-server": "^0.16.3",
     "moment": "^2.29.1",
     "sweetalert2": "^10.16.7",
     "vue": "^3.0.0",
+    "vue-chartkick": "^1.1.0",
     "vue-class-component": "^7.2.6",
     "vue-cookies": "^1.7.4",
-    "vue-next-select": "^2.7.0",
     "vue-router": "^4.0.0-0",
+    "vue3-chart-v2": "^0.8.2",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

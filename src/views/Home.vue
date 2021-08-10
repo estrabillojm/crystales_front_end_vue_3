@@ -60,53 +60,34 @@ export default {
       username: '',
       password: '',
       error: '',
-      userId: ''
+      userId: '',
     }
-    
   },
   created(){
-    this.checkCookie()
-    if(this.userId){
-      this.$router.push('/users')
-    }
+
+
+    
   },
   methods:{
-    getCookie(cname) {
-        let name = cname + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      },
-      checkCookie() {
-        
-          let role = this.getCookie("role");
-          this.role = role
-
-          let id = this.getCookie("id");
-          this.userId = id
-
-      },
     loginUser(){
-      axios.post(`/login`, {username: this.username, password: this.password}).then(res=>{
-        document.cookie = `token=${res.data.token}`
-        document.cookie = `id=${res.data.user.id}`
-        document.cookie = `role=${res.data.user.role}`
 
-        this.$router.push({name: "Users"})
-      }).catch(err=>{
-        console.log("err", err.response.data.message)
-        Swal.fire(err.response.data.message)
+      // axios.get('http://10.10.8.27:8000/sanctum/csrf-cookie').then(res=>{
+        // console.log(res.data)
+
+        this.$router.push({name: 'Users'})
+
+        // axios.post(`/login`, {
+        //   username: this.username,
+        //   password: this.password
+        // }).then(res=>{
+        //   this.$router.push({name: 'Users'})
+        // }).catch(err=>{
+        //   console.log(err.response.data.message)
+        // })
+
+
         
-      })
+      // }) 
     }
   }
 }
@@ -179,4 +160,5 @@ export default {
     border-radius:50px;
     padding:4px 30px;
   }
+  
 </style>

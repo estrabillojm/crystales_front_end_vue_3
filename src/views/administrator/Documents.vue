@@ -5,7 +5,7 @@
     </div>
     <div class="main-container">
     <Navbar/>
-        <div class="grid-header">
+        <div class="grid-header p-0">
 
            
             <div class="row">
@@ -45,12 +45,32 @@
                             <td>{{ dt.document_type.toUpperCase() }}</td>
                             <td>{{ dt.document_description.toUpperCase() }}</td>
                             <td class="text-center">
-                                <router-link :to="{name: 'EditDocuments', params: {id: dt.document_id}}">
-                                    <button class="btn btn-sm btn-info ml-1">Edit</button>
-                                </router-link>
-                                <button class="btn btn-sm btn-warning ml-1" @click="archiveDocument(dt.document_id)">Archive</button>
+                                <div class="btn-group setMaxWidth" role="group">   
+                                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <button class="dropdown-item text-black mb-1" @click="editPage(dt.document_id)">
+                                        <span class="text-warning">Edit</span> 
+                                    </button>
+                                    <button class="dropdown-item text-black mb-1" @click="archiveDocument(dt.document_id)">
+                                        <span class="text-danger">Delete</span> 
+                                    </button>
+                                    </div>
+                                </div>
+                            
                             </td>
                         </tr>
+                        </template>
+
+                        <template v-slot:tb-paginate>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><button class="page-link">Previous</button></li>
+                                    <!-- <li class="page-item"><button class="page-link" @click="changePage(rootDocument.prev_page_url, 1)">Previous</button></li> -->
+                                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                                    <li class="page-item"><button class="page-link">Next</button></li>
+                                    <!-- <li class="page-item"><button class="page-link" @click="changePage(rootDocument.next_page_url, 2)">Next</button></li> -->
+                                </ul>
+                            </nav>
                         </template>
                     </DataTable>
                 </div>
@@ -87,16 +107,16 @@ export default {
             document_type: '',
             document_description: '',
             categories: [],
-            query: ''
+            query: '',      
+            rootDocument: [],
+            currentPage: 1,
         }
     },
     created(){
         
         this.$store.dispatch('loadCategory')
         this.$store.dispatch('loadDocuments')
-       
-        
-        
+        this.$store.dispatch('setHeaderTitle', null)
     },
     computed:{
         ...mapState([
@@ -105,7 +125,9 @@ export default {
         ])
     },
     methods:{
-        
+        editPage(docId){
+            this.$router.push({name: 'EditDocuments', params: {id: docId}})
+        },
         searchData(){
             axios.post(`/documents/search`, {
                 value: this.query

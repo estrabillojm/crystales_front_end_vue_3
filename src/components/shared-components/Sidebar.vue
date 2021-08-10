@@ -6,12 +6,8 @@
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
       <div class="sidebar-brand">
-        <a href="#">
-          <transition name="watermark" mode="out-in" appear>
-              <img src="../../assets/logo_wt.png" alt="" class="side-logo">
-          </transition>
-          
-        </a>
+       
+         
       </div>
       <div class="sidebar-header">
         <div class="user-pic">
@@ -21,13 +17,13 @@
 
         
         <div class="user-info">
-          <span class="user-name"> {{ result.first_name }}
+          <span class="user-name text-white"> {{ result.first_name }}
             <strong>{{ result.last_name }}</strong>
           </span>
           <span class="user-role">{{role}}</span>
           <span class="user-status">
             <i class="fa fa-circle"></i>
-            <span>Online</span>
+            <span class="text-white">Online</span>
           </span>
         </div>
       </div>
@@ -38,54 +34,53 @@
       <!-- sidebar-header  -->
       
       <div class="sidebar-menu">
-        <ul>
+        <ul id="bg-primary" >
   
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">perm_identity</i>
-              <span>Master Lists</span>
-              
+              <i class="material-icons font-color">perm_identity</i>
+              <span id="text-white">Master Lists</span>
             </a>
 
-            <div class="sidebar-submenu">
-              <ul>
+            <div class="sidebar-submenu" id="color-white">
+              <ul id="bg-primary">
                 <li>
-                  <router-link :to="{ name: 'Users'}">User Accounts</router-link>
+                  <router-link class="text-white" :to="{ name: 'Users'}">User Accounts</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Documents'}">Documents</router-link>
+                  <router-link class="text-white" :to="{ name: 'Documents'}">Documents</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'AddCategory'}">Categories</router-link>
+                  <router-link class="text-white" :to="{ name: 'AddCategory'}">Categories</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Companies'}">Companies</router-link>
+                  <router-link class="text-white" :to="{ name: 'Companies'}">Companies</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Referrences'}">Referrences</router-link>
+                  <router-link class="text-white" :to="{ name: 'Referrences'}">Referrences</router-link>
 
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Reasons'}">Reasons</router-link>
+                  <router-link class="text-white" :to="{ name: 'Reasons'}">Reasons</router-link>
                   
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Banks'}">Banks</router-link>
+                  <router-link class="text-white" :to="{ name: 'Banks'}">Banks</router-link>
                 </li>
 
                 <li>
-                    <router-link :to="{ name: 'SupplierType'}">Supplier Type</router-link>
+                    <router-link class="text-white" :to="{ name: 'SupplierType'}">Supplier Type</router-link>
                 </li>
 
 
                 <li>
-                    <router-link :to="{ name: 'Suppliers'}">Suppliers</router-link>
+                    <router-link class="text-white" :to="{ name: 'Suppliers'}">Suppliers</router-link>
                 </li>
 
                 
@@ -103,33 +98,33 @@
           </li>
 
           <li class="header-menu">
-            <span>Management</span>
+            <span id="text-white">Management</span>
           </li>
 
 
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">description</i>
-              <span>Document</span>
+              <i class="material-icons font-color">description</i>
+              <span id="text-white">Document</span>
               
             </a>
 
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
                 <li>
-                  <router-link :to="{ name: 'RequestTagging'}">Tagging of Request</router-link>
+                  <router-link class="text-white" :to="{ name: 'RequestTagging'}">Tagging of Request</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'IdentifyTransaction'}">Identify</router-link>
+                  <router-link class="text-white" :to="{ name: 'IdentifyTransaction'}">Identify</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'DistributeTransaction'}">Distribute</router-link>
+                  <router-link class="text-white" :to="{ name: 'DistributeTransaction'}">Distribute</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'ReceivedReceiptReport'}">Received Receipt Report</router-link>
+                  <router-link class="text-white" :to="{ name: 'ReceivedReceiptReport'}">Received Receipt Report</router-link>
                 </li>
 
 
@@ -138,38 +133,38 @@
                 
 
                 <li>
-                  <router-link :to="{ name: 'Tagging'}">Tagging of Documents</router-link>
+                  <router-link class="text-white" :to="{ name: 'Tagging'}">Tagging of Documents</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'EditedTag'}">Approve Edited Tag</router-link>
+                  <router-link class="text-white" :to="{ name: 'EditedTag'}">Approve Edited Tag</router-link>
                 </li>
 
 
                 <li>
-                  <router-link :to="{ name: 'CounterReceipt'}">Counter Receipt</router-link>
+                  <router-link class="text-white" :to="{ name: 'CounterReceipt'}">Counter Receipt</router-link>
                 </li>
               </ul>
             </div>
           </li>
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">payments</i>
-              <span>Cheque</span>
+              <i class="material-icons font-color">payments</i>
+              <span id="text-white">Cheque</span>
             
             </a>
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
                 <li>
-                  <router-link :to="{ name: 'ReleasingOfCheque'}">Releasing of Cheque</router-link>
+                  <router-link class="text-white" :to="{ name: 'ReleasingOfCheque'}">Releasing of Cheque</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'CreationOfCheque'}">Creation of Cheque</router-link>
+                  <router-link class="text-white" :to="{ name: 'CreationOfCheque'}">Creation of Cheque</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'ClearingOfCheque'}">Clearing of Cheque</router-link>
+                  <router-link class="text-white" :to="{ name: 'ClearingOfCheque'}">Clearing of Cheque</router-link>
                 </li>
 
                 
@@ -179,17 +174,17 @@
           </li>
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">summarize</i>
-              <span>Reports</span>
+              <i class="material-icons font-color">summarize</i>
+              <span id="text-white">Reports</span>
             </a>
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
                 <li>
-                  <router-link :to="{ name: 'TaggedReports'}">Tagged Reports</router-link>
+                  <router-link class="text-white" :to="{ name: 'TaggedReports'}">Tagged Reports</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'ChequeReports'}">Cheque Reports</router-link>
+                  <router-link class="text-white" :to="{ name: 'ChequeReports'}">Cheque Reports</router-link>
                 </li>
             
               </ul>
@@ -197,26 +192,26 @@
           </li>
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">reviews</i>
-              <span>Voucher</span>
+              <i class="material-icons font-color">reviews</i>
+              <span id="text-white">Voucher</span>
             </a>
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
 
                 <li>
-                  <router-link :to="{ name: 'MatchingOfVoucher'}">Matching of Voucher</router-link>
+                  <router-link class="text-white" :to="{ name: 'MatchingOfVoucher'}">Matching of Voucher</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'CreationOfVoucher'}">Creation of Voucher</router-link>
+                  <router-link class="text-white" :to="{ name: 'CreationOfVoucher'}">Creation of Voucher</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'CheckingOfVoucher'}">Checking of Voucher</router-link>
+                  <router-link class="text-white" :to="{ name: 'CheckingOfVoucher'}">Checking of Voucher</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'ApprovingOfVoucher'}">Approving of Voucher</router-link>
+                  <router-link class="text-white" :to="{ name: 'ApprovingOfVoucher'}">Approving of Voucher</router-link>
                 </li>
 
              
@@ -228,26 +223,26 @@
 
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">security</i>
-              <span>Confidential</span>
+              <i class="material-icons font-color">security</i>
+              <span id="text-white">Confidential</span>
             </a>
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
 
                 <li>
-                  <router-link :to="{ name: 'TaggingAndVouchering'}">Tagging and Vouchering</router-link>
+                  <router-link class="text-white" :to="{ name: 'TaggingAndVouchering'}">Tagging and Vouchering</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Releasing'}">Releasing</router-link>
+                  <router-link class="text-white" :to="{ name: 'Releasing'}">Releasing</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'Approval'}">Approval</router-link>
+                  <router-link class="text-white" :to="{ name: 'Approval'}">Approval</router-link>
                 </li>
 
                 <li>
-                  <router-link :to="{ name: 'ActivityLogs'}">Activity Logs</router-link>
+                  <router-link class="text-white" :to="{ name: 'ActivityLogs'}">Activity Logs</router-link>
                 </li>
 
                 
@@ -260,13 +255,13 @@
 
           <li class="sidebar-dropdown">
             <a href="#">
-              <i class="material-icons">task</i>
-              <span>Approval</span>
+              <i class="material-icons font-color">task</i>
+              <span id="text-white">Approval</span>
             </a>
             <div class="sidebar-submenu">
-              <ul>
+              <ul id="bg-primary" >
                 <li>
-                  <router-link :to="{ name: 'TransactionApproval'}">Transaction Approval</router-link>
+                  <router-link class="text-white" :to="{ name: 'TransactionApproval'}">Transaction Approval</router-link>
                 </li>
               </ul>
             </div>
@@ -276,12 +271,14 @@
       <!-- sidebar-menu  -->
     </div>
     <!-- sidebar-content  -->
-    <div class="sidebar-footer">
+    <!-- <div class="sidebar-footer">
       
       <a href="#" @click="logOut">
         <i class="fa fa-power-off"></i>
       </a>
-    </div>
+    </div> -->
+
+    <button @click="logOut()">Logout</button>
   </nav>
 </div>
 
@@ -299,42 +296,12 @@ export default {
   },
 
   created(){
-    this.checkCookie()
-    if(!this.userId){
-      this.$router.push('/')
-    }
+    
   },
   methods:{
-    getCookie(cname) {
-        let name = cname + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      },
-      checkCookie() {
-        
-          let role = this.getCookie("role");
-          this.role = role
-
-          let id = this.getCookie("id");
-          this.userId = id
-          
-            axios.get(`/users/${this.userId}`).then(res=>{
-              this.result = res.data
-            })
-      },
     logOut(){
       axios.post('/logout').then(res=>{
-        console.log("Successfully Sign Out")
+        $router.push({name: ''})
       })
     }
   },
@@ -380,19 +347,21 @@ export default {
   @import '../../assets/css/side-custom.css';
 
 
+  .sidebar-header{
+    border:none !important;
+  }
 
-  /* .side-logo{
-    animation: opac 3s infinite both linear;
-}
+  .sidebar-menu{
+    border:none !important;
+  }
 
-@keyframes opac{
-    0%{ opacity: .2; }
-    20%{ opacity: .4; }
-    40%{ opacity: .6; }
-    60%{ opacity: .8; }
-    80%{ opacity: .6; }
-    100%{ opacity: .4; }
 
-    
-} */
+  .font-color{
+    color:rgb(90, 90, 90);
+  }
+
+
+  #text-white{
+    color:white !important;
+  }
 </style>

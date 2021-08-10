@@ -10,14 +10,14 @@
 
         <template v-slot:tb-extra-btn>
           
-            <div class="btn-group mb-1" role="group">
+            <div class="btn-group relativity" role="group">
               <div class="btn-group setMaxWidth" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop1 mb-1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{ docStatus }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                  <button class="dropdown-item text-black" @click="changeStatus('Import')">Import</button>
-                  <button class="dropdown-item text-black" @click="changeStatus('Export')">Export</button>
+                  <button class="dropdown-item text-black mb-1" @click="changeStatus('Import')">Import</button>
+                  <button class="dropdown-item text-black mb-1" @click="changeStatus('Export')">Export</button>
                 </div>
               </div>
             </div>
@@ -56,33 +56,50 @@
           <th class="text-center">Action</th>
         </template>
 
-        <template v-slot:tb-no-data>
+        <template v-slot:tb-no-data v-if="transactions.length == 0">
           <td class="text-center text-no-show" colspan=10>No Data to Show</td>
         </template>
         
-        <template v-slot:tb-data>
-            <!-- <tr class="requestors-request">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+        <template v-slot:tb-data v-else>
+
+            <tr class="requestors-request" v-for="(tr, index) in transactions" :key="index">
               <td></td>
               <td></td>
               <td></td>
               <td></td>
               
+          
+              
+              <td>{{ tr.supplier }}</td>
+
+              <td>{{ tr.document_amount }}</td>
+        
+              <td>{{ tr.status }}</td>
+              
+              
               <td class="text-center">
                 
-              <button type="button" class="btn-success rcv-btn">Receive</button>
-              <router-link :to="{name: 'Tagging'}">
-                  <span class="material-icons text-warning btn-icon" title="Modify Request">
-                    mode_edit
-                  </span>
-              </router-link>
+              <!-- <button type="button" class="btn-success rcv-btn">Receive</button> -->
+              <!-- <router-link :to="{name: 'IdentifyTransactionModify'}"> -->
+                <span class="material-icons text-warning btn-icon" @click="modifySingleTransaction([tr.id, {name: 'IdentifyTransactionModify'}])" title="Modify Request">
+                  mode_edit
+                </span>
+              <!-- </router-link> -->
               </td>
-            </tr> -->
+            </tr>
         </template>
+
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootData.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
+        
 
       </DataTable>
 
@@ -99,7 +116,7 @@ import Navbar from '../../components/shared-components/Navbar'
 import DataTable from '../../components/shared-components/DataTable'
 import Modal from '../../components/shared-components/Modal'
 import Loading from '../../components/shared-components/Loading'
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -115,13 +132,19 @@ export default {
       }
     },
     created(){
-
+      this.getAllTransaction()
+      this.$store.dispatch('setHeaderTitle','Received Receipt Report')
     },
     computed:{
-        
+        ...mapState([
+          'currentPage',
+          'rootData'
+        ]),
+        ...mapState('requests', ['transactions'])
         
     },
     methods:{
+      ...mapActions('requests', ['getAllTransaction']),
       changeStatus(str){
         this.docStatus = str
       },
@@ -151,6 +174,11 @@ export default {
 
   .text-black{
     color:black;
+  }
+
+  .relativity{
+    position:relative;
+    top:12px;
   }
   
 </style>

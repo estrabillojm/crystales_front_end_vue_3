@@ -14,7 +14,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     <form @submit.prevent="reasonSave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Reason</label>
@@ -86,11 +86,35 @@
             <td>{{ reason.remarks }}</td>
             <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(reason.id, reason.reason, reason.remarks)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="reasonArchive(reason.id)">Archive</button>
+
+                
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1" @click="editMode(reason.id, reason.reason, reason.remarks)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1"  @click="reasonArchive(reason.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
             </td> 
         </tr>
         </template>
+
+
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootReason.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootReason.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
+        
       </DataTable>
       
                 </div>
@@ -122,24 +146,47 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading},
     data(){
        return {
-           updateMode: false,
-           reasons: [],
-           companyid: null,
-           userInput: {
-               reason: '',
-               remarks: '',
-               active: true
-           },
-           isDone: true,
-           query: ''
+            updateMode: false,
+            reasons: [],
+            companyid: null,
+            userInput: {
+                reason: '',
+                remarks: '',
+                active: true
+            },
+            isDone: true,
+            query: '',
+            rootReason: [],
+            currentPage: 1,
+            
        }
     },
     created(){
         this.fetchReasons()
+        this.$store.dispatch('setHeaderTitle', null)
+
         
+    },
+    computed:{
+        ...mapState([
+            'pageResult'
+        ])
     },
  
     methods:{
+        async changePage(url, action){
+            if(url != null){
+                await this.$store.dispatch('changePage', [url, action])
+                this.reasons = this.pageResult.data.data
+                this.rootReason = this.pageResult.data
+                this.currentPage = this.pageResult.data.current_page   
+            }else{
+                await this.$store.dispatch('changePage', [url, action])
+            }
+
+            
+                
+        },
         searchData(){
             this.isDone = false
             axios.post(`/reasons/search`, {
@@ -307,7 +354,7 @@ export default {
             .then(response=>{
                 let result = response.data
                 let holder = result.data
-                console.log(holder.data)
+                this.rootReason = holder
                 
                 holder.data.forEach(hold=>{
                     this.reasons.push({

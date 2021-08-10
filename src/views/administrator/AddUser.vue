@@ -122,6 +122,7 @@
 
                     
                     <div class="col-md-12 auser-address">
+                        
                         <transition  tag="span" name="headersub" appear mode="out-in">
                             <span>
                                 <p><strong>ID Prefix : </strong>{{ result.prefix_id }}</p>
@@ -236,7 +237,8 @@ export default {
             documentHolder: [],
             categoryHolder: [],
             holder2: [],
-            isDone: true
+            isDone: true,
+            username: null,
             
         }       
     },
@@ -258,6 +260,8 @@ export default {
     },
     methods:{
         userSubmit(){
+
+            
             
 
             
@@ -285,20 +289,15 @@ export default {
                             department: this.result.department,
                             position: this.result.position,
                             permissions: this.privilege,
-                            document_types: this.selectionTagging,
+                            document_types: this.selectedCategory,
                             username: this.username.toLowerCase(),
                             password: this.username.toLowerCase(),
                             password_confirmation: this.username.toLowerCase(),
                             is_active: 1
                         }).then(()=>{
                             this.isDone = true
+                            this.$router.push({name: 'Users'})
                             Swal.fire('Saved!', '', 'success')
-                            this.$route.push({name: 'Users'})
-                        }).catch(err=>{
-                            let msg = err.response.data.errors
-                            this.isDone = true
-                            console.log(msg)
-                            Swal.fire(msg.error_message[0], 'Data not Saved', 'warning')
                         })
                         
                     } else if (result.isDenied) {

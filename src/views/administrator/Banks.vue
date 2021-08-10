@@ -15,7 +15,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 pl-4 mt-2">
+                <div class="col-md-4 pl-4 mt-2 custom-card-bd-img">
                     <form @submit.prevent="bankSave()" autocomplete="off">
                         <div class="form-group">
                             <label for="category">Bank Code</label>
@@ -105,11 +105,32 @@
             <td>{{ bank.bank_account }}</td>
             <!-- <td>{{ company.created_at }}</td> -->
             <td class="text-center">
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal" @click="editMode(bank.id, bank.bank_code, bank.bank_name, bank.bank_account, bank.bank_location)">Edit</button>
-                <button class="btn btn-sm btn-warning ml-1" @click="bankArchive(bank.id)">Archive</button>
+                <div class="btn-group setMaxWidth" role="group">   
+                    <span id="btnGroupDrop1 mb-1" type="button" class="material-icons btn-block ellipsis" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more_horiz</span>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <button class="dropdown-item text-black mb-1" @click="editMode(bank.id, bank.bank_code, bank.bank_name, bank.bank_account, bank.bank_location)">
+                        <span class="text-warning">Edit</span> 
+                    </button>
+                    <button class="dropdown-item text-black mb-1" @click="bankArchive(bank.id)">
+                        <span class="text-danger">Delete</span> 
+                    </button>
+                    </div>
+                </div>
+           
             </td> 
         </tr>
         </template>
+
+        <template v-slot:tb-paginate>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="page-link" @click="changePage(rootBank.prev_page_url, 1)">Previous</button></li>
+                    <li class="page-item"><button class="page-link">{{ currentPage }}</button></li>               
+                    <li class="page-item"><button class="page-link" @click="changePage(rootBank.next_page_url, 2)">Next</button></li>
+                </ul>
+            </nav>
+        </template>
+
       </DataTable>
       
                 </div>
@@ -142,25 +163,44 @@ export default {
     components: { Sidebar, Navbar, DataTable, Modal, Loading, SmallLoader},
     data(){
        return {
-           updateMode: false,
-           banks: [],
-           companyid: null,
-           userInput: {
-               bank_code: '',
-               bank_name: '',
-               bank_account: '',
-               bank_location: '',
-               active: true
-           },
-           isDone: true,
-           query: ''
+            updateMode: false,
+            banks: [],
+            companyid: null,
+            userInput: {
+                bank_code: '',
+                bank_name: '',
+                bank_account: '',
+                bank_location: '',
+                active: true
+            },
+            isDone: true,
+            query: '',
+            rootBank: [],
+            currentPage: 1,
        }
     },
     created(){
         this.fetchBanks()
     },
+    computed:{
+        ...mapState([
+            'pageResult'
+        ])
+    },
  
     methods:{
+        async changePage(url, action){
+            if(url != null){
+                await this.$store.dispatch('changePage', [url, action])
+                this.banks = this.pageResult.data.data
+                this.rootBank = this.pageResult.data
+                this.currentPage = this.pageResult.data.current_page         
+            }else{
+                await this.$store.dispatch('changePage', [url, action])
+            }
+
+    
+        },
         searchData(){
             this.banks = []
             this.isDone = false
@@ -379,7 +419,9 @@ export default {
             .then(response=>{
                 let result = response.data
                 let holder = result.data
-                console.log(holder.data)
+                console.log(holder)
+                this.rootBank = holder
+
                 
                 holder.data.forEach(hold=>{
                     this.banks.push({
